@@ -1,8 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 using BothezatConfig.Serial;
@@ -25,14 +26,17 @@ namespace BothezatConfig
             serialInterface = new SerialInterface();
             serialInterface.Initialize();
 
-            serialInterface.OnMessageRequestReceived += OnMessageRequestReceived;
+            serialInterface.logHandler = OnLogReceived;
 
-            serialInterface.Configure("COM9", 115200);
+            serialInterface.Configure("COM4", 115200);
             serialInterface.Open();
+
+            Thread thread = new Thread(RequestThread);
+            thread.Start();
 
             CreateForm();
 
-                        Application.Run(mainForm);
+            Application.Run(mainForm);
         }
 
         private static void CreateForm()
@@ -43,18 +47,33 @@ namespace BothezatConfig
             mainForm = new MainForm();
         }
 
-        public static void OnMessageRequestReceived(BothezatConfig.Serial.Message message)
+        private static void RequestThread()
         {
-            switch (message.type)
+            while (true)
             {
-                case Serial.Message.Type.TYPE_LOG:
-                    string log = Encoding.ASCII.GetString(message.payload);
-                    
-                    if (mainForm != null && !mainForm.IsDisposed)
-                        mainForm.Invoke((MethodInvoker)delegate() { mainForm.AddConsoleOutput(log); });
-
-                    break;
+                serialInterface.RequestPage(new Page.Resource.Type[] { Page.Resource.Type.ORIENTATION }, OnPageReceived);
+                Thread.Sleep(1000);
             }
+        }
+
+        public static void OnLogReceived(string log)
+        {
+            if (mainForm != null && !mainForm.IsDisposed)
+                mainForm.Invoke((MethodInvoker)delegate() { mainForm.AddConsoleOutput(log); });
+        }
+
+        public static void OnPageReceived(Page page)
+        {
+            Page.Resource resource = page.resources[0];
+            MemoryStream stream = new MemoryStream(resource.data);
+
+            BinaryReader reader = new BinaryReader(stream);
+            float x = reader.ReadSingle();
+            float y = reader.ReadSingle();
+            float z = reader.ReadSingle();
+            float w = reader.ReadSingle();
+
+            Console.WriteLine("{0:0.00};{1:0.00};{2:0.00};{3:0.00}", x, y, z, w);
         }
     }
 }

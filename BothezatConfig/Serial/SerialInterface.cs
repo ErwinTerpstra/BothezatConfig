@@ -16,17 +16,19 @@ namespace BothezatConfig.Serial
 
         private const int MESSAGE_BUFFER_SIZE = 1024;
 
-        public delegate void MessageEvent(Message message);
+        private const int PAYLOAD_BUFFER_SIZE = 1024 * 16;
 
-        public event MessageEvent OnMessageReceived;
+        public delegate void LogHandler(string log);
 
-        public event MessageEvent OnMessageRequestReceived;
+        public delegate Page.ResponseMessage PageRequestHandler(Page.RequestMessage request);
 
-        public event MessageEvent OnMessageHeaderCrcFailed;
+        public delegate void PageResponseHandler(Page page);
 
-        public event MessageEvent OnMessagePayloadCrcFailed;
+        public LogHandler logHandler;
 
-        public event MessageEvent OnMessageCrcFailed;
+        public PageRequestHandler pageRequestHandler;
+
+        private Dictionary<UInt32, PageResponseHandler> pageResponseHandlers;
 
         private Buffer crcBuffer;
 
@@ -40,6 +42,8 @@ namespace BothezatConfig.Serial
 
         private Buffer messageBuffer;
 
+        private Buffer payloadBuffer;
+
         private BinaryWriter writer;
 
         private bool headersRead;
@@ -51,6 +55,8 @@ namespace BothezatConfig.Serial
 		public SerialInterface()
         {
             random = new Random();
+
+            pageResponseHandlers = new Dictionary<uint, PageResponseHandler>();
         }
 
         public void Initialize()
@@ -62,8 +68,13 @@ namespace BothezatConfig.Serial
 
             readChunk = new byte[READ_CHUNK_SIZE];
 
+            // Create a buffer to hold the read message data
             messageBuffer = new Buffer();
             messageBuffer.Allocate(MESSAGE_BUFFER_SIZE);
+            
+            // Create a buffer to hold the serialized message data
+            payloadBuffer = new Buffer();
+            payloadBuffer.Allocate(PAYLOAD_BUFFER_SIZE);
 
             crcBuffer = new Buffer();
             crcBuffer.Allocate(currentlyReadingMessage.SerializedSize);
@@ -71,6 +82,19 @@ namespace BothezatConfig.Serial
             messageThread = new Thread(MessageRoutine);
 			messageThread.Name = "SerialInterface message thread";
 			messageThread.Start();
+        }
+
+        public bool OpenFirstAvailable(int baudRate)
+        {
+            foreach (string portName in SerialPort.GetPortNames())
+            {
+                Configure(portName, baudRate);
+
+                if (Open())
+                    return true;
+            }
+
+            return false;
         }
 
         public void Configure(string portName, int baudRate)
@@ -82,11 +106,21 @@ namespace BothezatConfig.Serial
             serialPort.BaudRate = baudRate;
         }
 
-		public void Open()
+		public bool Open()
         {
-            serialPort.Open();
+            try
+            {
+                Console.WriteLine("[SerialInterface]: Opening {0}...", serialPort.PortName);
+                serialPort.Open();
+            }
+            catch (IOException ex)
+            {
+                return false;
+            }
 
             writer = new BinaryWriter(serialPort.BaseStream);
+
+            return true;
         }
 
 		public void Close()
@@ -104,6 +138,40 @@ namespace BothezatConfig.Serial
 
             // Write the message payload to the serial port
             writer.Write(message.payload);
+
+            serialPort.BaseStream.Flush();
+        }
+
+        public void RequestPage(Page.Resource.Type[] resourceTypes, PageResponseHandler handler)
+        {
+            if (resourceTypes.Length > Page.MAX_RESOURCES_PER_PAGE)
+                throw new ArgumentOutOfRangeException("Can't request more than " + Page.MAX_RESOURCES_PER_PAGE + " resources per page");
+
+            // Create a request message with the page data
+            Page.RequestMessage requestMessage = new Page.RequestMessage();
+            requestMessage.resourceTypes = resourceTypes;
+
+            // Serialize the message into the payload buffer
+            requestMessage.Serialize(payloadBuffer);
+
+            // Construct a message to send
+            Message message = new Message();
+            message.type = Message.Type.TYPE_PAGE;
+            message.phase = Message.Phase.PHASE_REQUEST;
+            message.payload = payloadBuffer.GetData();
+
+            payloadBuffer.Clear();
+
+            SendMessage(message);
+
+            // Check if there is already a handler defined for the message ID
+            if (pageResponseHandlers.ContainsKey(message.id))
+            {
+                Console.WriteLine("[SerialInterface]: Duplicate handler for message ID {0}!", message.id);
+                return;
+            }
+
+            pageResponseHandlers[message.id] = handler;
         }
 
 		private void MessageRoutine()
@@ -142,6 +210,7 @@ namespace BothezatConfig.Serial
                 ++messagesProcessed;
 
                 currentlyReadingMessage = new Message();
+                headersRead = false;
             }
 
             return messagesProcessed;
@@ -149,15 +218,10 @@ namespace BothezatConfig.Serial
 
         private void ProcessMessage(Message message)
         {
-            if (OnMessageReceived != null)
-                OnMessageReceived(message);
-
             switch (message.phase)
             {
                 case Message.Phase.PHASE_REQUEST:
-                    if (OnMessageRequestReceived != null)
-                        OnMessageRequestReceived(message);
-
+                    HandleRequest(message);
                     break;
 
                 case Message.Phase.PHASE_RESPONSE:
@@ -170,11 +234,73 @@ namespace BothezatConfig.Serial
             }
         }
         
+        private void HandleRequest(Message message)
+        {
+
+            switch (message.type)
+            {
+                case Message.Type.TYPE_LOG:
+                    string log = Encoding.ASCII.GetString(message.payload);
+
+                    if (logHandler != null)
+                        logHandler(log);
+                    
+                    break;
+
+                case Message.Type.TYPE_PAGE:
+                    HandleResponse(message);
+                    break;
+
+                default:
+                    Console.WriteLine("[SerialInterface]: Invalid message request type: {0}", message.type);
+                    break;
+            }
+        }
+
         private void HandleResponse(Message message)
         {
             switch (message.type)
             {
+                case Message.Type.TYPE_PAGE:
+                    {
 
+                        // Create a buffer to wrap the payload
+                        Buffer buffer = new Buffer();
+                        buffer.Wrap(message.payload);
+
+                        // Deserialize the response message
+                        Page.ResponseMessage responseMessage = new Page.ResponseMessage();
+                        if (!responseMessage.Deserialize(buffer))
+                        {
+                            Console.WriteLine("[SerialInterface]: Failed to deserialize page response message!");
+                            break;
+                        }
+
+                        // Retrieve the handler registered for this message
+                        PageResponseHandler handler;
+
+                        if (!pageResponseHandlers.TryGetValue(message.id, out handler))
+                        {
+                            Console.WriteLine("[SerialInterface]: Received page response with ID {0} but no handler is registered.", message.id);
+                            break;
+                        }
+
+                        // Remove the handler so that each handler will only fire once
+                        pageResponseHandlers.Remove(message.id);
+
+                        // Create a page from the response message
+                        Page page = new Page();
+                        page.resources = responseMessage.resources;
+
+                        // Call the page response handler
+                        handler(page);
+
+                        break;
+                    }
+
+                default:
+                    Console.WriteLine("[SerialInterface]: Invalid message response type: {0}", message.type);
+                    break;
             }
         }
 
@@ -183,12 +309,12 @@ namespace BothezatConfig.Serial
             if (!headersRead && !ReadMessageHeaders(message))
                 return false;
 
-            if (messageBuffer.Available() < message.payloadLength)
+            if (messageBuffer.Available() < message.payload.Length)
                 return false;
 
-            message.payload = new byte[message.payloadLength];
-            int bytesRead = messageBuffer.reader.Read(message.payload, 0, message.payloadLength);
-            Debug.Assert(bytesRead == message.payloadLength);
+            message.payload = new byte[message.payload.Length];
+            int bytesRead = messageBuffer.reader.Read(message.payload, 0, message.payload.Length);
+            Debug.Assert(bytesRead == message.payload.Length);
 
             return true;
         }
@@ -203,31 +329,40 @@ namespace BothezatConfig.Serial
 
             message.Deserialize(messageBuffer.reader);
 
-            if (message.crc != CalculateMessageCRC(message) && false)
+            UInt32 expectedCRC = CalculateMessageCRC(message);
+            if (message.crc != expectedCRC & false)
             {
-                if (OnMessageHeaderCrcFailed != null)
-                    OnMessageHeaderCrcFailed(message);
-
-                if (OnMessageCrcFailed != null)
-                    OnMessageCrcFailed(message);
-
+                Console.WriteLine("[SerialInterface]: Invalid CRC received for message! Got: 0x{0:X}; Expected: 0x{1:X}", message.crc, expectedCRC);
                 return false;
             }
+
+            headersRead = true;
 
             return true;
         }
 
         private bool SyncMessageStream()
         {
+            int skippedBytes = 0;
+
             while (messageBuffer.Available() >= sizeof(UInt32))
             {
                 UInt32 magic = messageBuffer.reader.ReadUInt32();
                 messageBuffer.Seek(-sizeof(UInt32), SeekOrigin.Current);
 
                 if (magic == Message.MESSAGE_MAGIC)
+                {
+                    if (skippedBytes > 0)
+                        Console.WriteLine("[SerialInterface]: Synced message stream by skipping {0} bytes.", skippedBytes);
+
                     return true;
+                }
+
+                if (messageBuffer.Available() == 0)
+                    break;
 
                 messageBuffer.reader.ReadByte();
+                ++skippedBytes;
             }
 
             return false;
@@ -245,7 +380,7 @@ namespace BothezatConfig.Serial
             crcBuffer.writer.Write((UInt32)message.phase);
             crcBuffer.writer.Write((UInt32)message.type);
             crcBuffer.writer.Write(message.id);
-            crcBuffer.writer.Write(message.payloadLength);
+            crcBuffer.writer.Write(message.payload.Length);
 
             UInt32 crc = Crc32.Compute(crcBuffer.GetData());
 

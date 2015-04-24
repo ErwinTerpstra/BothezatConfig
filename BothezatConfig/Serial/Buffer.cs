@@ -26,6 +26,16 @@ namespace BothezatConfig.Serial
             writer = new BinaryWriter(this);
         }
 
+        public void Wrap(byte[] data)
+        {
+            this.data = data;
+
+            origin = 0;
+            readOffset = 0;
+
+            writeOffset = data.Length - 1;
+        }
+
         public void Allocate(int size)
         {
             data = new byte[size];

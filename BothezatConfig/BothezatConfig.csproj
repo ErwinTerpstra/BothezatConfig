@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Serial\Message.cs" />
+    <Compile Include="Serial\Page.cs" />
     <Compile Include="Serial\SerialInterface.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
