@@ -18,15 +18,15 @@ namespace BothezatConfig.Serial
 
         public enum Phase
         {
-            PHASE_REQUEST = 0x00,
-            PHASE_RESPONSE = 0x01
+            PHASE_REQUEST   = 0x00,
+            PHASE_RESPONSE  = 0x01
         };
 
         public enum Type
         {
-            TYPE_PAGE = 0x01,
-            TYPE_COMMAND = 0x02,
-            TYPE_LOG = 0x03
+            TYPE_PAGE       = 0x01,
+            TYPE_COMMAND    = 0x02,
+            TYPE_LOG        = 0x03
         };
 
         // A magic number used to sync the stream to the start of a message, should have the value in MESSAGE_MAGIC
@@ -57,8 +57,8 @@ namespace BothezatConfig.Serial
         {
             magic           = reader.ReadUInt32();
             crc             = reader.ReadUInt32();
-            phase           = (Phase)reader.ReadInt32();
-            type            = (Type)reader.ReadInt32();
+            phase           = (Phase)reader.ReadByte();
+            type            = (Type)reader.ReadByte();
             id              = reader.ReadUInt32();
             
             UInt32 payloadLength = reader.ReadUInt16();
@@ -70,16 +70,16 @@ namespace BothezatConfig.Serial
         {
             writer.Write(magic);
             writer.Write(crc);
-            writer.Write((Int32)phase);
-            writer.Write((Int32)type);
+            writer.Write((byte)phase);
+            writer.Write((byte)type);
             writer.Write(id);
             writer.Write((UInt16) payload.Length);
         }
 
         public int SerializedSize
         {
-            //           Magic            Phase            Type             ID               Payload length   CRC
-            get { return sizeof(UInt32) + sizeof(Int32) + sizeof(Int32) + sizeof(UInt32) + sizeof(UInt16) + sizeof(UInt32); }
+            //             Magic            Phase            Type             ID        Payload length          CRC
+            get { return sizeof(UInt32) + sizeof(byte) + sizeof(byte) + sizeof(UInt32) + sizeof(UInt16) + sizeof(UInt32); }
         }
     }
 }

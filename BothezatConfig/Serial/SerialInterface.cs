@@ -138,7 +138,7 @@ namespace BothezatConfig.Serial
 
             // Write the message payload to the serial port
             writer.Write(message.payload);
-
+            
             serialPort.BaseStream.Flush();
         }
 

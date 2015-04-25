@@ -18,7 +18,7 @@ namespace BothezatConfig.Serial
 				ORIENTATION 			= 0x01,
 				ACCEL_ORIENTATION 		= 0x02,
 
-				INVALID_RESOURCE 		= 0xFF,
+				INVALID_RESOURCE 		= 0xff,
 			};
 
 			public Type type;
@@ -33,17 +33,17 @@ namespace BothezatConfig.Serial
 
 			public void Serialize(Buffer buffer) 
 			{
-				buffer.writer.Write((Int32) type);
+				buffer.writer.Write((byte) type);
                 buffer.writer.Write((UInt32)data.Length);
                 buffer.writer.Write(data);
 			}
 
             public bool Deserialize(Buffer buffer)
             {
-                if (buffer.Available() < sizeof(Int32) + sizeof(UInt32))
+                if (buffer.Available() < sizeof(byte) + sizeof(UInt32))
                     return false;
 
-                type = (Type) buffer.reader.ReadInt32();
+                type = (Type) buffer.reader.ReadByte();
 
                 UInt32 length = buffer.reader.ReadUInt32();
 
@@ -53,7 +53,7 @@ namespace BothezatConfig.Serial
                 data = new byte[length];
                 int bytesRead = buffer.reader.Read(data, 0, (int) length);
 
-                if (bytesRead != null)
+                if (bytesRead != length)
                     throw new InvalidOperationException("Not enough bytes read!");
 
                 return true;
@@ -64,7 +64,7 @@ namespace BothezatConfig.Serial
                 get
                 {
                     //         Type         Length        Payload
-                    return sizeof(Int32) + sizeof(UInt32) + data.Length;
+                    return sizeof(byte) + sizeof(UInt32) + data.Length;
                 }
 			}
 		};
@@ -82,7 +82,7 @@ namespace BothezatConfig.Serial
                 buffer.writer.Write((UInt32) resourceTypes.Length);
 
                 for (int resourceTypeIdx = 0; resourceTypeIdx < resourceTypes.Length; ++resourceTypeIdx)
-                    buffer.writer.Write((Int32) resourceTypes[resourceTypeIdx]);
+                    buffer.writer.Write((byte) resourceTypes[resourceTypeIdx]);
             }
 
 			public bool Deserialize(Buffer buffer)
@@ -101,7 +101,7 @@ namespace BothezatConfig.Serial
 
 				// Read all resource types
 				for (int resourceIdx = 0; resourceIdx < numResources; ++resourceIdx)
-					resourceTypes[resourceIdx] = (Resource.Type) buffer.reader.ReadInt32();
+					resourceTypes[resourceIdx] = (Resource.Type) buffer.reader.ReadByte();
 
 				return true;
 			}
@@ -110,7 +110,7 @@ namespace BothezatConfig.Serial
             {
                 get
                 {
-                    return sizeof(UInt32) + sizeof(Int32) * resourceTypes.Length;
+                    return sizeof(UInt32) + sizeof(byte) * resourceTypes.Length;
                 }
             }
 		};

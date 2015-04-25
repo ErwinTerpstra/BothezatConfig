@@ -28,7 +28,7 @@ namespace BothezatConfig
 
             serialInterface.logHandler = OnLogReceived;
 
-            serialInterface.Configure("COM4", 115200);
+            serialInterface.Configure("COM9", 115200);
             serialInterface.Open();
 
             Thread thread = new Thread(RequestThread);
@@ -52,28 +52,33 @@ namespace BothezatConfig
             while (true)
             {
                 serialInterface.RequestPage(new Page.Resource.Type[] { Page.Resource.Type.ORIENTATION }, OnPageReceived);
-                Thread.Sleep(1000);
+                Thread.Sleep(50);
             }
         }
 
         public static void OnLogReceived(string log)
         {
-            if (mainForm != null && !mainForm.IsDisposed)
+            if (mainForm != null && !mainForm.IsDisposed && mainForm.IsHandleCreated)
                 mainForm.Invoke((MethodInvoker)delegate() { mainForm.AddConsoleOutput(log); });
         }
 
         public static void OnPageReceived(Page page)
         {
             Page.Resource resource = page.resources[0];
+
+            if (resource.type != Page.Resource.Type.ORIENTATION)
+            {
+                Console.WriteLine("[Program]: Received invalid resource!");
+                return;
+            }
+
             MemoryStream stream = new MemoryStream(resource.data);
 
             BinaryReader reader = new BinaryReader(stream);
-            float x = reader.ReadSingle();
-            float y = reader.ReadSingle();
-            float z = reader.ReadSingle();
-            float w = reader.ReadSingle();
 
-            Console.WriteLine("{0:0.00};{1:0.00};{2:0.00};{3:0.00}", x, y, z, w);
+            OpenTK.Quaternion quaternion = new OpenTK.Quaternion(reader.ReadSingle(), reader.ReadSingle(), -reader.ReadSingle(), reader.ReadSingle());
+            quaternion.Normalize();
+            mainForm.SetOrientation(quaternion);
         }
     }
 }

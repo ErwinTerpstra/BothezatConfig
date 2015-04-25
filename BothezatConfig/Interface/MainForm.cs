@@ -62,6 +62,8 @@ namespace BothezatConfig.Interface
 
         private bool glLoaded;
 
+        private Quaternion orientation;
+
         public MainForm()
         {
             InitializeComponent();
@@ -69,7 +71,7 @@ namespace BothezatConfig.Interface
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
+            orientation = Quaternion.Identity;
         }
 
 
@@ -80,6 +82,13 @@ namespace BothezatConfig.Interface
             consoleOutputBox.Suspend();
             consoleOutputBox.AppendText(contents);
             consoleOutputBox.Resume();
+        }
+
+        public void SetOrientation(Quaternion orientation)
+        {
+            this.orientation = orientation;
+
+            glControl.Invalidate();
         }
 
         private void glControl_Load(object sender, EventArgs e)
@@ -118,7 +127,7 @@ namespace BothezatConfig.Interface
 
 
             Matrix4 view = Matrix4.LookAt(0f, 0f, -5f, 0f, 0f, 0f, 0f, 1f, 0f);
-            Matrix4 model = Matrix4.Identity;
+            Matrix4 model = Matrix4.CreateFromQuaternion(orientation);
 
             Matrix4 modelView = model * view;
 

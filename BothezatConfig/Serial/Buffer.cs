@@ -20,6 +20,8 @@ namespace BothezatConfig.Serial
 
         private int origin;
 
+        private bool bufferFull;
+
         public Buffer()
         {
             reader = new BinaryReader(this);
@@ -32,8 +34,9 @@ namespace BothezatConfig.Serial
 
             origin = 0;
             readOffset = 0;
+            writeOffset = data.Length;
 
-            writeOffset = data.Length - 1;
+            bufferFull = true;
         }
 
         public void Allocate(int size)
@@ -49,7 +52,7 @@ namespace BothezatConfig.Serial
 
         public int Available()
         {
-            return (data.Length + (writeOffset - readOffset)) % data.Length;
+            return bufferFull ? data.Length : (data.Length + (writeOffset - readOffset)) % data.Length;
         }
 
         public void Clear()
@@ -58,6 +61,8 @@ namespace BothezatConfig.Serial
 
             readOffset = 0;
             writeOffset = 0;
+
+            bufferFull = false;
         }
 
         public byte[] GetData()
@@ -84,6 +89,10 @@ namespace BothezatConfig.Serial
                 readOffset = (readOffset + 1) % data.Length;
             }
 
+            // Check if we cleared some room from a full buffer
+            if (bytesRead > 0)
+                bufferFull = false;
+
             return bytesRead;
         }
 
@@ -109,6 +118,10 @@ namespace BothezatConfig.Serial
             // Check if all bytes have been written
             if (count > 0)
                 throw new InternalBufferOverflowException("Can't write past end of stream");
+
+            // Check if this write operation filled the buffer
+            if (Available() == 0)
+                bufferFull = true;
         }
 
         public override long Seek(long offset, SeekOrigin origin)
