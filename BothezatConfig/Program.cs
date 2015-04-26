@@ -28,7 +28,7 @@ namespace BothezatConfig
 
             serialInterface.logHandler = OnLogReceived;
 
-            serialInterface.Configure("COM9", 115200);
+            serialInterface.Configure("COM4", 115200);
             serialInterface.Open();
 
             Thread thread = new Thread(RequestThread);
@@ -58,8 +58,15 @@ namespace BothezatConfig
 
         public static void OnLogReceived(string log)
         {
-            if (mainForm != null && !mainForm.IsDisposed && mainForm.IsHandleCreated)
-                mainForm.Invoke((MethodInvoker)delegate() { mainForm.AddConsoleOutput(log); });
+			try
+			{
+				if (mainForm != null && mainForm.IsHandleCreated)
+					mainForm.Invoke((MethodInvoker)delegate() { mainForm.AddConsoleOutput(log); });
+			}
+			catch (ObjectDisposedException)
+			{
+				// Don't care
+			}
         }
 
         public static void OnPageReceived(Page page)

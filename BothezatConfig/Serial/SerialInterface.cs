@@ -247,10 +247,6 @@ namespace BothezatConfig.Serial
                     
                     break;
 
-                case Message.Type.TYPE_PAGE:
-                    HandleResponse(message);
-                    break;
-
                 default:
                     Console.WriteLine("[SerialInterface]: Invalid message request type: {0}", message.type);
                     break;
@@ -377,10 +373,10 @@ namespace BothezatConfig.Serial
         private UInt32 CalculateMessageCRC(Message message)
         {
             crcBuffer.writer.Write(message.magic);
-            crcBuffer.writer.Write((UInt32)message.phase);
-            crcBuffer.writer.Write((UInt32)message.type);
+            crcBuffer.writer.Write((byte)message.phase);
+			crcBuffer.writer.Write((byte)message.type);
             crcBuffer.writer.Write(message.id);
-            crcBuffer.writer.Write(message.payload.Length);
+            crcBuffer.writer.Write((UInt16) message.payload.Length);
 
             UInt32 crc = Crc32.Compute(crcBuffer.GetData());
 
