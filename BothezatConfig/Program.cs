@@ -28,7 +28,7 @@ namespace BothezatConfig
 
             serialInterface.logHandler = OnLogReceived;
 
-            serialInterface.Configure("COM4", 115200);
+            serialInterface.Configure("COM9", 115200);
             serialInterface.Open();
 
             Thread thread = new Thread(RequestThread);

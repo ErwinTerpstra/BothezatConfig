@@ -90,7 +90,7 @@ namespace BothezatConfig.Interface
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			orientation = Quaternion.Identity;
-			
+
 			Vector3 topLeftFront        = new Vector3(-0.5f,  0.5f,  0.5f);
 			Vector3 topRightFront       = new Vector3( 0.5f,  0.5f,  0.5f);
 			Vector3 topLeftBack			= new Vector3(-0.5f,  0.5f, -0.5f);
@@ -164,7 +164,7 @@ namespace BothezatConfig.Interface
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 			Matrix4 view = Matrix4.LookAt(0f, 0f, -5f, 0f, 0f, 0f, 0f, 1f, 0f);
-			Matrix4 model = Matrix4.CreateFromQuaternion(orientation);
+			Matrix4 model = Matrix4.CreateScale(new Vector3(1.0f, 0.4f, 1.0f)) * Matrix4.CreateFromQuaternion(orientation);
 
 			Matrix4 modelView = model * view;
 
