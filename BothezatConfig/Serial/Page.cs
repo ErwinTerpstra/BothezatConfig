@@ -14,20 +14,27 @@ namespace BothezatConfig.Serial
 		public class Resource
 		{
 			public enum Type
-			{
-				ORIENTATION 			= 0x10,
-				ACCEL_ORIENTATION 		= 0x11,
-
+            {
+                // Motion sensor
+                ORIENTATION             = 0x10,
+                ACCEL_ORIENTATION       = 0x11,
                 ACCELERATION            = 0x15,
                 ANGULAR_VELOCITY        = 0x16,
 
+                // Motor controller
                 YAW_PID                 = 0x20,
                 PITCH_PID               = 0x21,
                 ROLL_PID                = 0x22,
+                YAW_PID_DEBUG           = 0x23,
+                PITCH_PID_DEBUG         = 0x24,
+                ROLL_PID_DEBUG          = 0x25,
+                MOTOR_OUTPUT            = 0x26,
 
-                YAW_PID_DEBUG           = 0x25,
-                PITCH_PID_DEBUG         = 0x26,
-                ROLL_PID_DEBUG          = 0x27,
+                // Receiver
+                RECEIVER_CHANNELS       = 0x30,
+                RECEIVER_NORMALIZED     = 0x31,
+                RECEIVER_CONNECTED      = 0x32,
+
 
 				INVALID_RESOURCE 		= 0xff,
 			};

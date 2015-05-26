@@ -180,7 +180,7 @@ namespace BothezatConfig.Serial
 
         public override long Length
         {
-            get { return (data.Length + (writeOffset - origin)) % data.Length; }
+            get { return bufferFull ? data.Length : (data.Length + (writeOffset - origin)) % data.Length; }
         }
 
         public override bool CanRead

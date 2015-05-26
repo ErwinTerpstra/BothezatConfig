@@ -11,19 +11,25 @@ using BothezatConfig.Interface;
 
 namespace BothezatConfig
 {
-    public static class Program
+    public class Program
     {
-        private static SerialInterface serialInterface;
+        private SerialInterface serialInterface;
 
-        private static MainForm mainForm;
+        private ResourceManager resourceManager;
 
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        public static void Main()
+        private MainForm mainForm;
+
+        public Program()
+        {
+
+        }
+
+        public void Start()
         {
             serialInterface = new SerialInterface();
+            resourceManager = new ResourceManager(serialInterface);
+            mainForm = new MainForm(resourceManager);
+
             serialInterface.Initialize();
 
             serialInterface.logHandler = OnLogReceived;
@@ -31,32 +37,40 @@ namespace BothezatConfig
             serialInterface.Configure("COM9", 115200);
             serialInterface.Open();
 
-            Thread thread = new Thread(RequestThread);
-            thread.Start();
+            Thread requestThread = new Thread(RequestThread);
+            requestThread.Name = "Page request";
+            requestThread.Start();
 
-            CreateForm();
+            Thread formThread = new Thread(FormThread);
+            formThread.Name = "WinForm";
+            formThread.SetApartmentState(ApartmentState.STA);
+            formThread.Start();
 
-            Application.Run(mainForm);
         }
 
-        private static void CreateForm()
+        public static void Main()
+        {
+            Program program = new Program();
+            program.Start();
+        }
+
+        private void FormThread()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            mainForm = new MainForm();
+            Application.Run(mainForm);
         }
 
-        private static void RequestThread()
+        private void RequestThread()
         {
             while (true)
             {
-                serialInterface.RequestPage(new Page.Resource.Type[] { Page.Resource.Type.ORIENTATION }, OnPageReceived);
-                Thread.Sleep(50);
+                resourceManager.UpdateAllResources();
+                Thread.Sleep(100);
             }
         }
 
-        public static void OnLogReceived(string log)
+        public void OnLogReceived(string log)
         {
 			try
 			{
@@ -69,23 +83,5 @@ namespace BothezatConfig
 			}
         }
 
-        public static void OnPageReceived(Page page)
-        {
-            Page.Resource resource = page.resources[0];
-
-            if (resource.type != Page.Resource.Type.ORIENTATION)
-            {
-                Console.WriteLine("[Program]: Received invalid resource!");
-                return;
-            }
-
-            MemoryStream stream = new MemoryStream(resource.data);
-
-            BinaryReader reader = new BinaryReader(stream);
-
-            OpenTK.Quaternion quaternion = new OpenTK.Quaternion(reader.ReadSingle(), reader.ReadSingle(), -reader.ReadSingle(), reader.ReadSingle());
-            quaternion.Normalize();
-            mainForm.SetOrientation(quaternion);
-        }
     }
 }

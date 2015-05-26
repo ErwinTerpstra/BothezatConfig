@@ -6,16 +6,22 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
+using BothezatConfig.Serial;
+using BothezatConfig.Serial.MessageData;
+
 namespace BothezatConfig.Interface
 {
 	public partial class MainForm : Form
 	{
+        private const int UPDATE_INTERVAL = 100;
+
 		#region Cube information
 
 		private class Face
@@ -78,19 +84,24 @@ namespace BothezatConfig.Interface
 
 		#endregion
 
-		private bool glLoaded;
+        private bool glLoaded;
 
-		private Quaternion orientation;
+        private System.Timers.Timer updateTimer;
 
-		public MainForm()
+        private ResourceManager resourceManager;
+
+		public MainForm(ResourceManager resourceManager)
 		{
-			InitializeComponent();
+            this.resourceManager = resourceManager;
+
+            InitializeComponent();
+
+            updateTimer = new System.Timers.Timer(UPDATE_INTERVAL);
+            updateTimer.Elapsed += delegate(object sender, ElapsedEventArgs e) { Invoke((MethodInvoker)UpdateResources); };
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			orientation = Quaternion.Identity;
-
 			Vector3 topLeftFront        = new Vector3(-0.5f,  0.5f,  0.5f);
 			Vector3 topRightFront       = new Vector3( 0.5f,  0.5f,  0.5f);
 			Vector3 topLeftBack			= new Vector3(-0.5f,  0.5f, -0.5f);
@@ -110,8 +121,9 @@ namespace BothezatConfig.Interface
 
 			cubeFaces[4] = new Face(bottomLeftFront,	bottomLeftBack,		topLeftBack,		topLeftFront,		Color.Orange);	// Left
 			cubeFaces[5] = new Face(bottomRightBack,	bottomRightFront,	topRightFront,		topRightBack,		Color.Red);		// Right
-		}
 
+            updateTimer.Start();
+		}
 
 		public void AddConsoleOutput(string contents)
 		{
@@ -122,13 +134,17 @@ namespace BothezatConfig.Interface
 			consoleOutputBox.Resume();
 		}
 
-		public void SetOrientation(Quaternion orientation)
-		{
-			this.orientation = orientation;
+        private void UpdateResources()
+        {
+            glControl.Invalidate();
 
-			glControl.Invalidate();
-		}
+            throttleBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.THROTTLE)));
+            elevatorBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.ELEVATOR)));
+            aileronBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.AILERON)));
+            rudderBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.RUDDER)));
+        }
 
+        
 		private void glControl_Load(object sender, EventArgs e)
 		{
 			glLoaded = true;
@@ -163,6 +179,8 @@ namespace BothezatConfig.Interface
 
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+            Quaternion orientation = orientationButton.Checked ? resourceManager.motionSensor.orientation : resourceManager.motionSensor.accelOrientation;
+
 			Matrix4 view = Matrix4.LookAt(0f, 0f, -5f, 0f, 0f, 0f, 0f, 1f, 0f);
 			Matrix4 model = Matrix4.CreateScale(new Vector3(1.0f, 0.4f, 1.0f)) * Matrix4.CreateFromQuaternion(orientation);
 
@@ -194,5 +212,10 @@ namespace BothezatConfig.Interface
 			  
 			glControl.SwapBuffers();
 		}
+
+        private int ConvertToBarValue(float input)
+        {
+            return Math.Min(Math.Max((int) ((input + 1.0f) * 50), 0), 100);
+        }
 	}
 }
