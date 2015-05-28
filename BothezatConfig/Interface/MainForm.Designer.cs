@@ -29,11 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.Label label3;
+            System.Windows.Forms.Label label2;
+            System.Windows.Forms.Label label1;
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainLayout = new BothezatConfig.Interface.DoubleBufferedLayoutPanel(this.components);
-            this.consoleOutputBox = new System.Windows.Forms.TextBox();
             this.glControl = new OpenTK.GLControl();
             this.channelTable = new System.Windows.Forms.TableLayoutPanel();
             this.rudderLabel = new System.Windows.Forms.Label();
@@ -44,13 +46,22 @@
             this.throttleBar = new System.Windows.Forms.ProgressBar();
             this.elevatorBar = new System.Windows.Forms.ProgressBar();
             this.throttleLabel = new System.Windows.Forms.Label();
-            this.orientationButton = new System.Windows.Forms.RadioButton();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.optionsPanel = new System.Windows.Forms.TableLayoutPanel();
             this.accelOrientationButton = new System.Windows.Forms.RadioButton();
+            this.orientationButton = new System.Windows.Forms.RadioButton();
+            this.consoleOutputBox = new System.Windows.Forms.TextBox();
+            this.configPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.yawPID = new BothezatConfig.Interface.PIDControl();
+            this.pitchPID = new BothezatConfig.Interface.PIDControl();
+            this.rollPid = new BothezatConfig.Interface.PIDControl();
+            label3 = new System.Windows.Forms.Label();
+            label2 = new System.Windows.Forms.Label();
+            label1 = new System.Windows.Forms.Label();
             this.mainMenu.SuspendLayout();
             this.mainLayout.SuspendLayout();
             this.channelTable.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.optionsPanel.SuspendLayout();
+            this.configPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -83,8 +94,9 @@
             this.mainLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.mainLayout.Controls.Add(this.glControl, 1, 1);
             this.mainLayout.Controls.Add(this.channelTable, 1, 0);
+            this.mainLayout.Controls.Add(this.optionsPanel, 1, 2);
             this.mainLayout.Controls.Add(this.consoleOutputBox, 0, 1);
-            this.mainLayout.Controls.Add(this.tableLayoutPanel1, 1, 2);
+            this.mainLayout.Controls.Add(this.configPanel, 0, 0);
             this.mainLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainLayout.Location = new System.Drawing.Point(0, 24);
             this.mainLayout.Name = "mainLayout";
@@ -94,18 +106,6 @@
             this.mainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.mainLayout.Size = new System.Drawing.Size(1177, 670);
             this.mainLayout.TabIndex = 1;
-            // 
-            // consoleOutputBox
-            // 
-            this.consoleOutputBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.consoleOutputBox.Location = new System.Drawing.Point(3, 313);
-            this.consoleOutputBox.Multiline = true;
-            this.consoleOutputBox.Name = "consoleOutputBox";
-            this.consoleOutputBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.consoleOutputBox.Size = new System.Drawing.Size(582, 304);
-            this.consoleOutputBox.TabIndex = 0;
             // 
             // glControl
             // 
@@ -233,36 +233,25 @@
             this.throttleLabel.Text = "Throttle:";
             this.throttleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // orientationButton
+            // optionsPanel
             // 
-            this.orientationButton.AutoSize = true;
-            this.orientationButton.Location = new System.Drawing.Point(3, 3);
-            this.orientationButton.Name = "orientationButton";
-            this.orientationButton.Size = new System.Drawing.Size(72, 17);
-            this.orientationButton.TabIndex = 3;
-            this.orientationButton.TabStop = true;
-            this.orientationButton.Text = "Combined";
-            this.orientationButton.UseVisualStyleBackColor = true;
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.optionsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.Controls.Add(this.accelOrientationButton, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.orientationButton, 0, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(591, 623);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(583, 44);
-            this.tableLayoutPanel1.TabIndex = 5;
+            this.optionsPanel.ColumnCount = 4;
+            this.optionsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.optionsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.optionsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.optionsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.optionsPanel.Controls.Add(this.accelOrientationButton, 1, 0);
+            this.optionsPanel.Controls.Add(this.orientationButton, 0, 0);
+            this.optionsPanel.Location = new System.Drawing.Point(591, 623);
+            this.optionsPanel.Name = "optionsPanel";
+            this.optionsPanel.RowCount = 1;
+            this.optionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.optionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
+            this.optionsPanel.Size = new System.Drawing.Size(583, 44);
+            this.optionsPanel.TabIndex = 5;
             // 
             // accelOrientationButton
             // 
@@ -274,6 +263,125 @@
             this.accelOrientationButton.TabStop = true;
             this.accelOrientationButton.Text = "Accelerometer only";
             this.accelOrientationButton.UseVisualStyleBackColor = true;
+            // 
+            // orientationButton
+            // 
+            this.orientationButton.AutoSize = true;
+            this.orientationButton.Location = new System.Drawing.Point(3, 3);
+            this.orientationButton.Name = "orientationButton";
+            this.orientationButton.Size = new System.Drawing.Size(72, 17);
+            this.orientationButton.TabIndex = 3;
+            this.orientationButton.TabStop = true;
+            this.orientationButton.Text = "Combined";
+            this.orientationButton.UseVisualStyleBackColor = true;
+            // 
+            // consoleOutputBox
+            // 
+            this.consoleOutputBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.consoleOutputBox.Location = new System.Drawing.Point(3, 313);
+            this.consoleOutputBox.Multiline = true;
+            this.consoleOutputBox.Name = "consoleOutputBox";
+            this.consoleOutputBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.consoleOutputBox.Size = new System.Drawing.Size(582, 304);
+            this.consoleOutputBox.TabIndex = 0;
+            // 
+            // configPanel
+            // 
+            this.configPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.configPanel.ColumnCount = 2;
+            this.configPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.configPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.configPanel.Controls.Add(label3, 0, 2);
+            this.configPanel.Controls.Add(label2, 0, 1);
+            this.configPanel.Controls.Add(this.yawPID, 1, 0);
+            this.configPanel.Controls.Add(this.pitchPID, 1, 1);
+            this.configPanel.Controls.Add(this.rollPid, 1, 2);
+            this.configPanel.Controls.Add(label1, 0, 0);
+            this.configPanel.Location = new System.Drawing.Point(3, 3);
+            this.configPanel.Name = "configPanel";
+            this.configPanel.RowCount = 4;
+            this.configPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.configPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.configPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.configPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.configPanel.Size = new System.Drawing.Size(582, 304);
+            this.configPanel.TabIndex = 6;
+            // 
+            // label3
+            // 
+            label3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(3, 60);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(54, 30);
+            label3.TabIndex = 5;
+            label3.Text = "Roll:";
+            label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label2
+            // 
+            label2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(3, 30);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(54, 30);
+            label2.TabIndex = 4;
+            label2.Text = "Pitch:";
+            label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // yawPID
+            // 
+            this.yawPID.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.yawPID.Config = null;
+            this.yawPID.Location = new System.Drawing.Point(63, 3);
+            this.yawPID.Name = "yawPID";
+            this.yawPID.Size = new System.Drawing.Size(516, 24);
+            this.yawPID.TabIndex = 0;
+            // 
+            // pitchPID
+            // 
+            this.pitchPID.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pitchPID.Config = null;
+            this.pitchPID.Location = new System.Drawing.Point(63, 33);
+            this.pitchPID.Name = "pitchPID";
+            this.pitchPID.Size = new System.Drawing.Size(516, 24);
+            this.pitchPID.TabIndex = 1;
+            // 
+            // rollPid
+            // 
+            this.rollPid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rollPid.Config = null;
+            this.rollPid.Location = new System.Drawing.Point(63, 63);
+            this.rollPid.Name = "rollPid";
+            this.rollPid.Size = new System.Drawing.Size(516, 24);
+            this.rollPid.TabIndex = 2;
+            // 
+            // label1
+            // 
+            label1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(3, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(54, 30);
+            label1.TabIndex = 3;
+            label1.Text = "Yaw:";
+            label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // MainForm
             // 
@@ -292,8 +400,10 @@
             this.mainLayout.PerformLayout();
             this.channelTable.ResumeLayout(false);
             this.channelTable.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.optionsPanel.ResumeLayout(false);
+            this.optionsPanel.PerformLayout();
+            this.configPanel.ResumeLayout(false);
+            this.configPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -317,8 +427,12 @@
         private System.Windows.Forms.Label elevatorLabel;
         private System.Windows.Forms.Label throttleLabel;
         private System.Windows.Forms.RadioButton orientationButton;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel optionsPanel;
         private System.Windows.Forms.RadioButton accelOrientationButton;
+        private System.Windows.Forms.TableLayoutPanel configPanel;
+        private PIDControl yawPID;
+        private PIDControl pitchPID;
+        private PIDControl rollPid;
     }
 }
 

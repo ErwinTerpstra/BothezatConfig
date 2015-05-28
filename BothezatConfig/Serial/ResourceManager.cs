@@ -11,6 +11,8 @@ namespace BothezatConfig.Serial
 {
     public class ResourceManager
     {
+        public Config config;
+
         public MotionSensor motionSensor;
 
         public Receiver receiver;
@@ -23,11 +25,13 @@ namespace BothezatConfig.Serial
         {
             this.serialInterface = serialInterface;
 
-            motionSensor = new MotionSensor();
-            receiver = new Receiver();
+            config          = new Config();
+            motionSensor    = new MotionSensor();
+            receiver        = new Receiver();
 
             parsers = new Dictionary<Page.Resource.Type, ParseFunction.Callback>();
 
+            RegisterParser(config);
             RegisterParser(motionSensor);
             RegisterParser(receiver);
         }
@@ -41,7 +45,13 @@ namespace BothezatConfig.Serial
 
         public void UpdateAllResources()
         {
-            serialInterface.RequestPage(parsers.Keys.ToArray(), PageReceivedCallback);
+            List<Page.Resource.Type> types = new List<Page.Resource.Type>();
+            types.AddRange(motionSensor.RetrieveParsers().Select(x => x.type));
+            types.AddRange(receiver.RetrieveParsers().Select(x => x.type));
+
+            serialInterface.RequestPage(types.ToArray(), PageReceivedCallback);
+
+            serialInterface.RequestPage(new Page.Resource.Type[] { Page.Resource.Type.CONFIG }, PageReceivedCallback);
         }
 
         private void PageReceivedCallback(Page page)

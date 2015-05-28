@@ -113,7 +113,7 @@ namespace BothezatConfig.Serial
                 Console.WriteLine("[SerialInterface]: Opening {0}...", serialPort.PortName);
                 serialPort.Open();
             }
-            catch (IOException ex)
+            catch (IOException)
             {
                 return false;
             }

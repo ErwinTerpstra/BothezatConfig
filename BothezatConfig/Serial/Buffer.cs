@@ -80,18 +80,15 @@ namespace BothezatConfig.Serial
             int bytesRead = 0;
 
             // Read until we caught up with the read pointer or we've read enough bytes
-            while (readOffset != writeOffset && bytesRead < count)
+            while ((readOffset != writeOffset || bufferFull) && bytesRead < count)
             {
                 buffer[offset++] = data[readOffset];
 
                 ++bytesRead;
+                bufferFull = false;
 
                 readOffset = (readOffset + 1) % data.Length;
             }
-
-            // Check if we cleared some room from a full buffer
-            if (bytesRead > 0)
-                bufferFull = false;
 
             return bytesRead;
         }
@@ -174,7 +171,7 @@ namespace BothezatConfig.Serial
 
         public override long Position
         {
-            get { return (data.Length + (readOffset - origin)) % data.Length; }
+            get { return bufferFull ? 0 : ((data.Length + (readOffset - origin)) % data.Length); }
             set { Seek(value, SeekOrigin.Begin); }
         }
 

@@ -15,6 +15,9 @@ namespace BothezatConfig.Serial
 		{
 			public enum Type
             {
+                // System
+                CONFIG                  = 0x01,
+
                 // Motion sensor
                 ORIENTATION             = 0x10,
                 ACCEL_ORIENTATION       = 0x11,

@@ -96,8 +96,12 @@ namespace BothezatConfig.Interface
 
             InitializeComponent();
 
+            yawPID.Config       = resourceManager.config.MC_PID_CONFIGURATION[1];
+            pitchPID.Config     = resourceManager.config.MC_PID_CONFIGURATION[0];
+            rollPid.Config      = resourceManager.config.MC_PID_CONFIGURATION[2];
+
             updateTimer = new System.Timers.Timer(UPDATE_INTERVAL);
-            updateTimer.Elapsed += delegate(object sender, ElapsedEventArgs e) { Invoke((MethodInvoker)UpdateResources); };
+            updateTimer.Elapsed += delegate(object sender, ElapsedEventArgs e) { try { Invoke((MethodInvoker)UpdateResources); } catch (ObjectDisposedException) { } };
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -142,6 +146,10 @@ namespace BothezatConfig.Interface
             elevatorBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.ELEVATOR)));
             aileronBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.AILERON)));
             rudderBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.RUDDER)));
+
+            yawPID.UpdateFields();
+            pitchPID.UpdateFields();
+            rollPid.UpdateFields();
         }
 
         

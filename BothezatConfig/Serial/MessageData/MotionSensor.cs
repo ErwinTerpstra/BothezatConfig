@@ -25,38 +25,25 @@ namespace BothezatConfig.Serial.MessageData
 
         private void ParseOrientation(Page.Resource.Type type, BinaryReader reader)
         {
-            orientation.X = reader.ReadSingle();
-            orientation.Y = reader.ReadSingle();
-            orientation.Z = reader.ReadSingle();
-            orientation.W = reader.ReadSingle();
-
+            orientation = OpenTKExtensions.DeserializeQuaternion(reader);
             orientation.Normalize();
         }
 
         private void ParseAccelOrientation(Page.Resource.Type type, BinaryReader reader)
         {
-            accelOrientation.X = reader.ReadSingle();
-            accelOrientation.Y = reader.ReadSingle();
-            accelOrientation.Z = reader.ReadSingle();
-            accelOrientation.W = reader.ReadSingle();
-
+            accelOrientation = OpenTKExtensions.DeserializeQuaternion(reader);
             accelOrientation.Normalize();
         }
         private void ParseAcceleration(Page.Resource.Type type, BinaryReader reader)
         {
-            acceleration.X = reader.ReadSingle();
-            acceleration.Y = reader.ReadSingle();
-            acceleration.Z = reader.ReadSingle();
+            acceleration = OpenTKExtensions.DeserializeVector3(reader);
         }
 
         private void ParseAngularVelocity(Page.Resource.Type type, BinaryReader reader)
         {
-            angularVelocity.X = reader.ReadSingle();
-            angularVelocity.Y = reader.ReadSingle();
-            angularVelocity.Z = reader.ReadSingle();
+            angularVelocity = OpenTKExtensions.DeserializeVector3(reader);
         }
-
-
+        
         public ParseFunction[] RetrieveParsers()
         {
             return new ParseFunction[]
