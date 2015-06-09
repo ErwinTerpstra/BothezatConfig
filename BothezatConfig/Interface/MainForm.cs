@@ -225,5 +225,15 @@ namespace BothezatConfig.Interface
         {
             return Math.Min(Math.Max((int) ((input + 1.0f) * 50), 0), 100);
         }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            resourceManager.SaveConfig();
+        }
+
+        private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            resourceManager.UpdateConfig();
+        }
 	}
 }

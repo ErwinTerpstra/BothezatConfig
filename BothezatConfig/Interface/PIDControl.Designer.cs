@@ -67,6 +67,7 @@
             // dField
             // 
             this.dField.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.dField.DecimalPlaces = 3;
             this.dField.Increment = new decimal(new int[] {
             1,
             0,
@@ -81,6 +82,7 @@
             // iField
             // 
             this.iField.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.iField.DecimalPlaces = 3;
             this.iField.Increment = new decimal(new int[] {
             1,
             0,
@@ -121,8 +123,9 @@
             // pField
             // 
             this.pField.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.pField.DecimalPlaces = 3;
             this.pField.Increment = new decimal(new int[] {
-            1,
+            5,
             0,
             0,
             65536});

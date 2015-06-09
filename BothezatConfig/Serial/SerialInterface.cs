@@ -20,15 +20,15 @@ namespace BothezatConfig.Serial
 
         public delegate void LogHandler(string log);
 
-        public delegate Page.ResponseMessage PageRequestHandler(Page.RequestMessage request);
-
         public delegate void PageResponseHandler(Page page);
 
+        public delegate void CommandResponseHandler(Command.ResponseMessage response);
+
         public LogHandler logHandler;
-
-        public PageRequestHandler pageRequestHandler;
-
+        
         private Dictionary<UInt32, PageResponseHandler> pageResponseHandlers;
+        
+        private Dictionary<UInt32, CommandResponseHandler> commandResponseHandlers;
 
         private Buffer crcBuffer;
 
@@ -57,6 +57,7 @@ namespace BothezatConfig.Serial
             random = new Random();
 
             pageResponseHandlers = new Dictionary<uint, PageResponseHandler>();
+            commandResponseHandlers = new Dictionary<uint, CommandResponseHandler>();
         }
 
         public void Initialize()
@@ -167,13 +168,44 @@ namespace BothezatConfig.Serial
             // Check if there is already a handler defined for the message ID
             if (pageResponseHandlers.ContainsKey(message.id))
             {
-                Console.WriteLine("[SerialInterface]: Duplicate handler for message ID {0}!", message.id);
+                Console.WriteLine("[SerialInterface]: Duplicate page handler for message ID {0}!", message.id);
                 return;
             }
 
             pageResponseHandlers[message.id] = handler;
         }
 
+        public void SendCommand(Command.Type type, byte[] data, CommandResponseHandler handler)
+        {
+            // Create a request message with the command data
+            Command.RequestMessage requestMessage = new Command.RequestMessage();
+            requestMessage.type = type;
+            requestMessage.length = (UInt32) data.Length;
+            requestMessage.data = data;
+
+            // Serialize the message into the payload buffer
+            requestMessage.Serialize(payloadBuffer);
+
+            // Construct a message to send
+            Message message = new Message();
+            message.type = Message.Type.TYPE_COMMAND;
+            message.phase = Message.Phase.PHASE_REQUEST;
+            message.payload = payloadBuffer.GetData();
+
+            payloadBuffer.Clear();
+
+            SendMessage(message);
+
+            // Check if there is already a handler defined for the message ID
+            if (commandResponseHandlers.ContainsKey(message.id))
+            {
+                Console.WriteLine("[SerialInterface]: Duplicate command handler for message ID {0}!", message.id);
+                return;
+            }
+
+            commandResponseHandlers[message.id] = handler;
+        }
+        
 		private void MessageRoutine()
         {
 			while (!disposed)
@@ -193,6 +225,8 @@ namespace BothezatConfig.Serial
             {
                 int chunkSize = serialPort.Read(readChunk, 0, READ_CHUNK_SIZE);
 
+                // If the message buffer is full and we can't read a message from it, there is a message larger than the buffer size
+                // Ignore the culprit message by purging the buffer
                 if (messageBuffer.FreeBytes() < chunkSize && ProcessMessages() == 0)
                     PurgeMessageBuffer();
                 
@@ -259,7 +293,6 @@ namespace BothezatConfig.Serial
             {
                 case Message.Type.TYPE_PAGE:
                     {
-
                         // Create a buffer to wrap the payload
                         Buffer buffer = new Buffer();
                         buffer.Wrap(message.payload);
@@ -293,6 +326,39 @@ namespace BothezatConfig.Serial
 
                         break;
                     }
+
+                case Message.Type.TYPE_COMMAND:
+                    {
+                        // Create a buffer to wrap the payload
+                        Buffer buffer = new Buffer();
+                        buffer.Wrap(message.payload);
+
+                        // Deserialize the response message
+                        Command.ResponseMessage responseMessage = new Command.ResponseMessage();
+                        if (!responseMessage.Deserialize(buffer))
+                        {
+                            Console.WriteLine("[SerialInterface]: Failed to deserialize command response message!");
+                            break;
+                        }
+
+                        // Retrieve the handler registered for this message
+                        CommandResponseHandler handler;
+
+                        if (!commandResponseHandlers.TryGetValue(message.id, out handler))
+                        {
+                            Console.WriteLine("[SerialInterface]: Received command response with ID {0} but no handler is registered.", message.id);
+                            break;
+                        }
+
+                        // Remove the handler so that each handler will only fire once
+                        commandResponseHandlers.Remove(message.id);
+                        
+                        // Call the page response handler
+                        handler(responseMessage);
+
+                        break;
+                    }
+
 
                 default:
                     Console.WriteLine("[SerialInterface]: Invalid message response type: {0}", message.type);
@@ -384,9 +450,15 @@ namespace BothezatConfig.Serial
 
             return crc;
         }
+
         public UInt32 GetNextMessageID()
         {
             return (UInt32) random.Next(int.MinValue, int.MaxValue);
+        }
+
+        public bool IsOpen
+        {
+            get { return serialPort.IsOpen; }
         }
 
 

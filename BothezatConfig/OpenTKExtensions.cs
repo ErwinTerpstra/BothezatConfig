@@ -31,6 +31,10 @@ namespace BothezatConfig
 
             return q;
         }
+        public static int QuaternionSize
+        {
+            get { return sizeof(float) * 4; }
+        }
 
         public static void Serialize(this Vector3 v, BinaryWriter writer)
         {
@@ -38,6 +42,7 @@ namespace BothezatConfig
             writer.Write(v.Y);
             writer.Write(v.Z);
         }
+
         public static Vector3 DeserializeVector3(BinaryReader reader)
         {
             Vector3 v = new Vector3();
@@ -46,6 +51,11 @@ namespace BothezatConfig
             v.Z = reader.ReadSingle();
 
             return v;
+        }
+
+        public static int Vector3Size
+        {
+            get { return sizeof(float) * 3; }
         }
 
     }

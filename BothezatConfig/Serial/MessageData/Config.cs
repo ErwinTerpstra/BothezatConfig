@@ -17,7 +17,7 @@ namespace BothezatConfig.Serial.MessageData
 		    /*
 		     *	Radio receiver
 		     */
-		    public const byte RX_PWM_AMOUNT = 2;
+		    public const byte RX_PWM_AMOUNT = 4;
 
 		    public const byte RX_MAX_CHANNELS = 8;
 
@@ -58,14 +58,14 @@ namespace BothezatConfig.Serial.MessageData
 			    return true;
 		    }
 
-		    public UInt32 SerializedSize()
+		    public int SerializedSize
 		    {
-			    return ChannelCalibration.Size();
+                get { return ChannelCalibration.Size; }
 		    }
 
-		    public static UInt32 Size()
+		    public static int Size
 		    {
-			    return sizeof(UInt16) * 4;
+                get { return sizeof(UInt16) * 4; }
 		    }
 	    };
 
@@ -103,14 +103,14 @@ namespace BothezatConfig.Serial.MessageData
 			    return true;
 		    }
 
-		    public UInt32 SerializedSize()
+		    public int SerializedSize
 		    {
-			    return PidConfiguration.Size();
+                get { return PidConfiguration.Size; }
 		    }
 
-		    public static UInt32 Size()
+		    public static int Size
 		    {
-			    return sizeof(float) * 3;
+                get { return sizeof(float) * 3; }
 		    }
 
 	    };
@@ -317,5 +317,70 @@ namespace BothezatConfig.Serial.MessageData
             };
         }
 
+        public int SerializedSize
+        {
+            get { return Config.Size; }
+        }
+        public static int Size
+        {
+            get
+            {
+                return
+                    sizeof(UInt32) + // MAGIC;
+
+                    sizeof(UInt16) + // VERSION;
+
+                    /*
+                     * System
+                     */
+                    sizeof(UInt16) + // SYS_LOOP_TIME;
+
+                    /*
+                     * Serial interface
+                     */
+                    sizeof(UInt32) + // SR_BAUD_RATE;
+
+                    ChannelCalibration.Size * Constants.RX_MAX_CHANNELS + // RX_CHANNEL_CALIBRATION[Constants.RX_MAX_CHANNELS];
+
+                    /*
+                     * Motion sensor
+                     */
+                    sizeof(byte) + // MS_CALIBRATION_SAMPLES;
+
+                    sizeof(UInt16) + // MS_CALIBRATION_INTERVAL;
+
+                    sizeof(float) + // MS_GYRO_FILTER_RC;
+
+                    sizeof(float) + // MS_ACCEL_CORRECTION_RC;
+
+                    sizeof(float) + // MS_ACCEL_MAX;
+
+                    /*
+                     * Flight system
+                     */
+
+                    OpenTKExtensions.Vector3Size + // FS_MAN_ANGULAR_VELOCITY;
+
+                    sizeof(float) + // FS_ATTI_MAX_PITCH;
+
+                    sizeof(float) + // FS_ATTI_MAX_ROLL;
+
+                    /*
+                     * Motor controller
+                     */
+                    sizeof(UInt32) + // MC_PWM_FREQUENCY;
+
+                    sizeof(UInt16) + // MC_PWM_PERIOD;
+
+                    sizeof(UInt16) + // MC_PWM_MIN_COMMAND;
+
+                    sizeof(UInt16) + // MC_PWM_MIN_OUTPUT;
+
+                    sizeof(UInt16) + // MC_PWM_MAX_COMMAND;
+
+                    PidConfiguration.Size * 3 + // MC_PID_CONFIGURATION[3];
+                0;
+            }
+        }
     }
 }

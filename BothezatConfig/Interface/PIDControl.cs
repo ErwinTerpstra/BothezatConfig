@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 
 using BothezatConfig.Serial.MessageData;
@@ -14,13 +15,15 @@ namespace BothezatConfig.Interface
 {
     public partial class PIDControl : UserControl
     {
+        private System.Timers.Timer timer;
+
         private Config.PidConfiguration config;
 
         public PIDControl()
         {
             InitializeComponent();
         }
-
+        
         public void UpdateFields()
         {
             if (config == null)
