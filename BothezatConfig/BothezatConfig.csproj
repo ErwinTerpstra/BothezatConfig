@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interface\ChannelControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\ChannelControl.Designer.cs">
+      <DependentUpon>ChannelControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\ControlExtensions.cs" />
     <Compile Include="Interface\DoubleBufferedLayoutPanel.cs">
       <SubType>Component</SubType>
@@ -71,6 +77,9 @@
     <Compile Include="Serial\Buffer.cs" />
     <Compile Include="Serial\Command.cs" />
     <Compile Include="Serial\Crc32.cs" />
+    <EmbeddedResource Include="Interface\ChannelControl.resx">
+      <DependentUpon>ChannelControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -103,6 +112,7 @@
     <Compile Include="Serial\Message.cs" />
     <Compile Include="Serial\MessageData\Config.cs" />
     <Compile Include="Serial\MessageData\MotionSensor.cs" />
+    <Compile Include="Serial\MessageData\Observable.cs" />
     <Compile Include="Serial\MessageData\Receiver.cs" />
     <Compile Include="Serial\MessageData\ResourceParser.cs" />
     <Compile Include="Serial\Page.cs" />

@@ -15,23 +15,34 @@ namespace BothezatConfig.Interface
 {
     public partial class PIDControl : UserControl
     {
-        private System.Timers.Timer timer;
-
         private Config.PidConfiguration config;
+
+        private bool writeToConfig;
 
         public PIDControl()
         {
+            writeToConfig = false;
+
             InitializeComponent();
         }
         
+        public void OnConfigUpdated(Observable observable)
+        {
+            Invoke((MethodInvoker)UpdateFields);
+        }
+
         public void UpdateFields()
         {
             if (config == null)
                 return;
 
+            writeToConfig = false;
             pField.Value = (decimal) config.kp;
             iField.Value = (decimal) config.ki;
             dField.Value = (decimal) config.kd;
+            writeToConfig = true;
+
+            Invalidate();
         }
 
         public Config.PidConfiguration Config
@@ -39,14 +50,24 @@ namespace BothezatConfig.Interface
             get { return config; }
             set
             {
+                if (config == value)
+                    return;
+
+                if (config != null)
+                    config.RemoveObserver(OnConfigUpdated);
+
                 config = value;
+
+                if (config != null)
+                    config.AddObserver(OnConfigUpdated);
+
                 UpdateFields(); 
             }
         }
 
         private void field_ValueChanged(object sender, EventArgs e)
         {
-            if (config == null)
+            if (config == null || !writeToConfig)
                 return;
 
             config.kp = (float) pField.Value;

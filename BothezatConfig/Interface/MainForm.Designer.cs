@@ -103,14 +103,14 @@
             // revertToolStripMenuItem
             // 
             this.revertToolStripMenuItem.Name = "revertToolStripMenuItem";
-            this.revertToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.revertToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.revertToolStripMenuItem.Text = "&Revert";
             this.revertToolStripMenuItem.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.saveToolStripMenuItem.Text = "&Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -130,7 +130,7 @@
             this.mainLayout.RowCount = 3;
             this.mainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.mainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.mainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.mainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.mainLayout.Size = new System.Drawing.Size(1177, 670);
             this.mainLayout.TabIndex = 1;
             // 
@@ -138,9 +138,9 @@
             // 
             this.glControl.BackColor = System.Drawing.Color.Black;
             this.glControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.glControl.Location = new System.Drawing.Point(591, 313);
+            this.glControl.Location = new System.Drawing.Point(591, 323);
             this.glControl.Name = "glControl";
-            this.glControl.Size = new System.Drawing.Size(583, 304);
+            this.glControl.Size = new System.Drawing.Size(583, 314);
             this.glControl.TabIndex = 1;
             this.glControl.VSync = false;
             this.glControl.Load += new System.EventHandler(this.glControl_Load);
@@ -272,12 +272,12 @@
             this.optionsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.optionsPanel.Controls.Add(this.accelOrientationButton, 1, 0);
             this.optionsPanel.Controls.Add(this.orientationButton, 0, 0);
-            this.optionsPanel.Location = new System.Drawing.Point(591, 623);
+            this.optionsPanel.Location = new System.Drawing.Point(591, 643);
             this.optionsPanel.Name = "optionsPanel";
             this.optionsPanel.RowCount = 1;
             this.optionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.optionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
-            this.optionsPanel.Size = new System.Drawing.Size(583, 44);
+            this.optionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.optionsPanel.Size = new System.Drawing.Size(583, 24);
             this.optionsPanel.TabIndex = 5;
             // 
             // accelOrientationButton
@@ -287,13 +287,13 @@
             this.accelOrientationButton.Name = "accelOrientationButton";
             this.accelOrientationButton.Size = new System.Drawing.Size(115, 17);
             this.accelOrientationButton.TabIndex = 4;
-            this.accelOrientationButton.TabStop = true;
             this.accelOrientationButton.Text = "Accelerometer only";
             this.accelOrientationButton.UseVisualStyleBackColor = true;
             // 
             // orientationButton
             // 
             this.orientationButton.AutoSize = true;
+            this.orientationButton.Checked = true;
             this.orientationButton.Location = new System.Drawing.Point(3, 3);
             this.orientationButton.Name = "orientationButton";
             this.orientationButton.Size = new System.Drawing.Size(72, 17);
@@ -307,11 +307,11 @@
             this.consoleOutputBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.consoleOutputBox.Location = new System.Drawing.Point(3, 313);
+            this.consoleOutputBox.Location = new System.Drawing.Point(3, 323);
             this.consoleOutputBox.Multiline = true;
             this.consoleOutputBox.Name = "consoleOutputBox";
             this.consoleOutputBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.consoleOutputBox.Size = new System.Drawing.Size(582, 304);
+            this.consoleOutputBox.Size = new System.Drawing.Size(582, 314);
             this.consoleOutputBox.TabIndex = 0;
             // 
             // configPanel
@@ -335,7 +335,7 @@
             this.configPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.configPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.configPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.configPanel.Size = new System.Drawing.Size(582, 304);
+            this.configPanel.Size = new System.Drawing.Size(582, 314);
             this.configPanel.TabIndex = 6;
             // 
             // label3

@@ -10,7 +10,7 @@ using OpenTK;
 namespace BothezatConfig.Serial.MessageData
 {
     
-    public class Config : ResourceParser
+    public class Config : Observable, ResourceParser
     {	
 	    public struct Constants
 	    {
@@ -28,7 +28,7 @@ namespace BothezatConfig.Serial.MessageData
 
 	    };
 
-	    public class ChannelCalibration
+	    public class ChannelCalibration : Observable
 	    {
 		    public UInt16 min, max, mid, deadband;
 
@@ -55,6 +55,8 @@ namespace BothezatConfig.Serial.MessageData
 			    mid = stream.ReadUInt16();
 			    deadband = stream.ReadUInt16();
 
+                Notify();
+
 			    return true;
 		    }
 
@@ -69,15 +71,15 @@ namespace BothezatConfig.Serial.MessageData
 		    }
 	    };
 
-        public class PidConfiguration
+        public class PidConfiguration : Observable
 	    {
 		    public float kp, ki, kd;
 		
 		    public PidConfiguration()
 		    {
-                kp = 1.0f;
-                ki = 1.0f;
-                kd = 1.0f;
+                kp = 0.0f;
+                ki = 0.0f;
+                kd = 0.0f;
 		    }
 
 		    public PidConfiguration(float kp, float ki, float kd)
@@ -99,6 +101,8 @@ namespace BothezatConfig.Serial.MessageData
 			    kp = stream.ReadSingle();
 			    ki = stream.ReadSingle();
 			    kd = stream.ReadSingle();
+
+                Notify();
 
 			    return true;
 		    }
@@ -299,6 +303,8 @@ namespace BothezatConfig.Serial.MessageData
 
 	        for (int axis = 0; axis < 3; ++axis)
 		        MC_PID_CONFIGURATION[axis].Deserialize(stream);
+
+            Notify();
 
             return true;
         }

@@ -18,9 +18,7 @@ namespace BothezatConfig.Serial.MessageData
             RUDDER,
             AUX1, AUX2,
             AUX3, AUX4,
-
-            MAX_CHANNELS,
-
+            
             // Generalization of default order
             // These are used for easy channel mapping
             CHANNEL1 = AILERON,
@@ -41,8 +39,8 @@ namespace BothezatConfig.Serial.MessageData
 
         public Receiver()
         {
-            channels = new UInt16[(int) Channel.MAX_CHANNELS];
-            normalizedChannels = new float[(int) Channel.MAX_CHANNELS];
+            channels = new UInt16[(int) Config.Constants.RX_MAX_CHANNELS];
+            normalizedChannels = new float[(int)Config.Constants.RX_MAX_CHANNELS];
         }
 
         public UInt16 GetChannel(Channel channel)
@@ -57,13 +55,13 @@ namespace BothezatConfig.Serial.MessageData
 
         private void ParseChannels(Page.Resource.Type type, BinaryReader reader)
         {
-            for (int channel = 0; channel < (int)Channel.MAX_CHANNELS; ++channel)
+            for (int channel = 0; channel < (int)Config.Constants.RX_MAX_CHANNELS; ++channel)
                 channels[channel] = reader.ReadUInt16();
         }
 
         private void ParseNormalizedChannels(Page.Resource.Type type, BinaryReader reader)
         {
-            for (int channel = 0; channel < (int) Channel.MAX_CHANNELS; ++channel)
+            for (int channel = 0; channel < (int)Config.Constants.RX_MAX_CHANNELS; ++channel)
                 normalizedChannels[channel] = reader.ReadSingle();
         }
 

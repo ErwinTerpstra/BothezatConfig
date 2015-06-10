@@ -146,14 +146,9 @@ namespace BothezatConfig.Interface
             elevatorBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.ELEVATOR)));
             aileronBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.AILERON)));
             rudderBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.RUDDER)));
-
-            yawPID.UpdateFields();
-            pitchPID.UpdateFields();
-            rollPid.UpdateFields();
         }
 
-        
-		private void glControl_Load(object sender, EventArgs e)
+        private void glControl_Load(object sender, EventArgs e)
 		{
 			glLoaded = true;
 
