@@ -21,7 +21,7 @@ namespace BothezatConfig.Interface
 
         public PIDControl()
         {
-            writeToConfig = false;
+            writeToConfig = true;
 
             InitializeComponent();
         }

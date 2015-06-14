@@ -96,6 +96,26 @@ namespace BothezatConfig.Serial
 
         }
 
+        public void RevertConfig()
+        {
+            if (!serialInterface.IsOpen)
+                return;
+
+            serialInterface.SendCommand(Command.Type.RESET_CONFIG, delegate(Command.ResponseMessage response)
+            {
+                switch (response.state)
+                {
+                    case Command.State.COMMAND_OK:
+                        Console.WriteLine("[ResourceManager]: Config reverted to defaults!");
+                        break;
+
+                    case Command.State.COMMAND_ERROR:
+                        Console.WriteLine("[ResourceManager]: Error while reverting config!");
+                        break;
+                }
+            });
+        }
+
         private void PageReceivedCallback(Page page)
         {
             foreach (Page.Resource resource in page.resources)

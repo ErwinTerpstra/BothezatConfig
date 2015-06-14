@@ -36,19 +36,15 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.revertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainLayout = new BothezatConfig.Interface.DoubleBufferedLayoutPanel(this.components);
             this.glControl = new OpenTK.GLControl();
             this.channelTable = new System.Windows.Forms.TableLayoutPanel();
-            this.rudderLabel = new System.Windows.Forms.Label();
-            this.aileronLabel = new System.Windows.Forms.Label();
-            this.elevatorLabel = new System.Windows.Forms.Label();
-            this.rudderBar = new System.Windows.Forms.ProgressBar();
-            this.aileronBar = new System.Windows.Forms.ProgressBar();
-            this.throttleBar = new System.Windows.Forms.ProgressBar();
-            this.elevatorBar = new System.Windows.Forms.ProgressBar();
-            this.throttleLabel = new System.Windows.Forms.Label();
+            this.rudderControl = new BothezatConfig.Interface.ChannelControl();
+            this.elevatorControl = new BothezatConfig.Interface.ChannelControl();
+            this.aileronControl = new BothezatConfig.Interface.ChannelControl();
+            this.throttleControl = new BothezatConfig.Interface.ChannelControl();
             this.optionsPanel = new System.Windows.Forms.TableLayoutPanel();
             this.accelOrientationButton = new System.Windows.Forms.RadioButton();
             this.orientationButton = new System.Windows.Forms.RadioButton();
@@ -57,6 +53,7 @@
             this.yawPID = new BothezatConfig.Interface.PIDControl();
             this.pitchPID = new BothezatConfig.Interface.PIDControl();
             this.rollPid = new BothezatConfig.Interface.PIDControl();
+            this.revertToDefaultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             label3 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
@@ -94,23 +91,24 @@
             // configToolStripMenuItem
             // 
             this.configToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.revertToolStripMenuItem,
-            this.saveToolStripMenuItem});
+            this.loadToolStripMenuItem,
+            this.saveToolStripMenuItem,
+            this.revertToDefaultsToolStripMenuItem});
             this.configToolStripMenuItem.Name = "configToolStripMenuItem";
             this.configToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.configToolStripMenuItem.Text = "&Config";
             // 
-            // revertToolStripMenuItem
+            // loadToolStripMenuItem
             // 
-            this.revertToolStripMenuItem.Name = "revertToolStripMenuItem";
-            this.revertToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.revertToolStripMenuItem.Text = "&Revert";
-            this.revertToolStripMenuItem.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
+            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadToolStripMenuItem.Text = "&Load";
+            this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "&Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -149,116 +147,69 @@
             // 
             // channelTable
             // 
-            this.channelTable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.channelTable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.channelTable.ColumnCount = 2;
-            this.channelTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.channelTable.ColumnCount = 1;
             this.channelTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.channelTable.Controls.Add(this.rudderLabel, 0, 3);
-            this.channelTable.Controls.Add(this.aileronLabel, 0, 2);
-            this.channelTable.Controls.Add(this.elevatorLabel, 0, 1);
-            this.channelTable.Controls.Add(this.rudderBar, 1, 3);
-            this.channelTable.Controls.Add(this.aileronBar, 1, 2);
-            this.channelTable.Controls.Add(this.throttleBar, 1, 0);
-            this.channelTable.Controls.Add(this.elevatorBar, 1, 1);
-            this.channelTable.Controls.Add(this.throttleLabel, 0, 0);
+            this.channelTable.Controls.Add(this.rudderControl, 0, 3);
+            this.channelTable.Controls.Add(this.elevatorControl, 0, 2);
+            this.channelTable.Controls.Add(this.aileronControl, 0, 1);
+            this.channelTable.Controls.Add(this.throttleControl, 0, 0);
             this.channelTable.Location = new System.Drawing.Point(591, 3);
             this.channelTable.Name = "channelTable";
-            this.channelTable.RowCount = 4;
-            this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.channelTable.Size = new System.Drawing.Size(583, 78);
+            this.channelTable.RowCount = 5;
+            this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.channelTable.Size = new System.Drawing.Size(583, 314);
             this.channelTable.TabIndex = 2;
             // 
-            // rudderLabel
+            // rudderControl
             // 
-            this.rudderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.rudderLabel.AutoSize = true;
-            this.rudderLabel.Location = new System.Drawing.Point(3, 60);
-            this.rudderLabel.Name = "rudderLabel";
-            this.rudderLabel.Size = new System.Drawing.Size(42, 20);
-            this.rudderLabel.TabIndex = 7;
-            this.rudderLabel.Text = "Rudder";
-            this.rudderLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.rudderControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rudderControl.Channel = BothezatConfig.Serial.MessageData.Receiver.Channel.RUDDER;
+            this.rudderControl.Location = new System.Drawing.Point(3, 183);
+            this.rudderControl.Name = "rudderControl";
+            this.rudderControl.Size = new System.Drawing.Size(577, 54);
+            this.rudderControl.TabIndex = 9;
             // 
-            // aileronLabel
+            // elevatorControl
             // 
-            this.aileronLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.aileronLabel.AutoSize = true;
-            this.aileronLabel.Location = new System.Drawing.Point(3, 40);
-            this.aileronLabel.Name = "aileronLabel";
-            this.aileronLabel.Size = new System.Drawing.Size(39, 20);
-            this.aileronLabel.TabIndex = 6;
-            this.aileronLabel.Text = "Aileron";
-            this.aileronLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.elevatorControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.elevatorControl.Channel = BothezatConfig.Serial.MessageData.Receiver.Channel.ELEVATOR;
+            this.elevatorControl.Location = new System.Drawing.Point(3, 123);
+            this.elevatorControl.Name = "elevatorControl";
+            this.elevatorControl.Size = new System.Drawing.Size(577, 54);
+            this.elevatorControl.TabIndex = 8;
             // 
-            // elevatorLabel
+            // aileronControl
             // 
-            this.elevatorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.elevatorLabel.AutoSize = true;
-            this.elevatorLabel.Location = new System.Drawing.Point(3, 20);
-            this.elevatorLabel.Name = "elevatorLabel";
-            this.elevatorLabel.Size = new System.Drawing.Size(49, 20);
-            this.elevatorLabel.TabIndex = 5;
-            this.elevatorLabel.Text = "Elevator:";
-            this.elevatorLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.aileronControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.aileronControl.Channel = BothezatConfig.Serial.MessageData.Receiver.Channel.AILERON;
+            this.aileronControl.Location = new System.Drawing.Point(3, 63);
+            this.aileronControl.Name = "aileronControl";
+            this.aileronControl.Size = new System.Drawing.Size(577, 54);
+            this.aileronControl.TabIndex = 7;
             // 
-            // rudderBar
+            // throttleControl
             // 
-            this.rudderBar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rudderBar.Location = new System.Drawing.Point(103, 63);
-            this.rudderBar.MarqueeAnimationSpeed = 0;
-            this.rudderBar.Name = "rudderBar";
-            this.rudderBar.Size = new System.Drawing.Size(477, 14);
-            this.rudderBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.rudderBar.TabIndex = 3;
-            // 
-            // aileronBar
-            // 
-            this.aileronBar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.aileronBar.Location = new System.Drawing.Point(103, 43);
-            this.aileronBar.MarqueeAnimationSpeed = 0;
-            this.aileronBar.Name = "aileronBar";
-            this.aileronBar.Size = new System.Drawing.Size(477, 14);
-            this.aileronBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.aileronBar.TabIndex = 3;
-            // 
-            // throttleBar
-            // 
-            this.throttleBar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.throttleBar.Location = new System.Drawing.Point(103, 3);
-            this.throttleBar.MarqueeAnimationSpeed = 0;
-            this.throttleBar.Name = "throttleBar";
-            this.throttleBar.Size = new System.Drawing.Size(477, 14);
-            this.throttleBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.throttleBar.TabIndex = 0;
-            // 
-            // elevatorBar
-            // 
-            this.elevatorBar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.elevatorBar.Location = new System.Drawing.Point(103, 23);
-            this.elevatorBar.MarqueeAnimationSpeed = 0;
-            this.elevatorBar.Name = "elevatorBar";
-            this.elevatorBar.Size = new System.Drawing.Size(477, 14);
-            this.elevatorBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.elevatorBar.TabIndex = 1;
-            // 
-            // throttleLabel
-            // 
-            this.throttleLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.throttleLabel.AutoSize = true;
-            this.throttleLabel.Location = new System.Drawing.Point(3, 0);
-            this.throttleLabel.Name = "throttleLabel";
-            this.throttleLabel.Size = new System.Drawing.Size(46, 20);
-            this.throttleLabel.TabIndex = 4;
-            this.throttleLabel.Text = "Throttle:";
-            this.throttleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.throttleControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.throttleControl.Channel = BothezatConfig.Serial.MessageData.Receiver.Channel.THROTTLE;
+            this.throttleControl.Location = new System.Drawing.Point(3, 3);
+            this.throttleControl.Name = "throttleControl";
+            this.throttleControl.Size = new System.Drawing.Size(577, 54);
+            this.throttleControl.TabIndex = 6;
             // 
             // optionsPanel
             // 
@@ -410,6 +361,13 @@
             label1.Text = "Yaw:";
             label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // revertToDefaultsToolStripMenuItem
+            // 
+            this.revertToDefaultsToolStripMenuItem.Name = "revertToDefaultsToolStripMenuItem";
+            this.revertToDefaultsToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.revertToDefaultsToolStripMenuItem.Text = "&Revert to defaults";
+            this.revertToDefaultsToolStripMenuItem.Click += new System.EventHandler(this.revertToDefaultsToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -426,7 +384,6 @@
             this.mainLayout.ResumeLayout(false);
             this.mainLayout.PerformLayout();
             this.channelTable.ResumeLayout(false);
-            this.channelTable.PerformLayout();
             this.optionsPanel.ResumeLayout(false);
             this.optionsPanel.PerformLayout();
             this.configPanel.ResumeLayout(false);
@@ -445,14 +402,6 @@
         private System.Windows.Forms.TextBox consoleOutputBox;
         private OpenTK.GLControl glControl;
         private System.Windows.Forms.TableLayoutPanel channelTable;
-        private System.Windows.Forms.ProgressBar rudderBar;
-        private System.Windows.Forms.ProgressBar aileronBar;
-        private System.Windows.Forms.ProgressBar throttleBar;
-        private System.Windows.Forms.ProgressBar elevatorBar;
-        private System.Windows.Forms.Label rudderLabel;
-        private System.Windows.Forms.Label aileronLabel;
-        private System.Windows.Forms.Label elevatorLabel;
-        private System.Windows.Forms.Label throttleLabel;
         private System.Windows.Forms.RadioButton orientationButton;
         private System.Windows.Forms.TableLayoutPanel optionsPanel;
         private System.Windows.Forms.RadioButton accelOrientationButton;
@@ -461,8 +410,13 @@
         private PIDControl pitchPID;
         private PIDControl rollPid;
         private System.Windows.Forms.ToolStripMenuItem configToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem revertToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private ChannelControl throttleControl;
+        private ChannelControl rudderControl;
+        private ChannelControl elevatorControl;
+        private ChannelControl aileronControl;
+        private System.Windows.Forms.ToolStripMenuItem revertToDefaultsToolStripMenuItem;
     }
 }
 

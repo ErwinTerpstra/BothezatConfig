@@ -175,6 +175,11 @@ namespace BothezatConfig.Serial
             pageResponseHandlers[message.id] = handler;
         }
 
+        public void SendCommand(Command.Type type, CommandResponseHandler handler)
+        {
+            SendCommand(type, new byte[0], handler);
+        }
+
         public void SendCommand(Command.Type type, byte[] data, CommandResponseHandler handler)
         {
             // Create a request message with the command data

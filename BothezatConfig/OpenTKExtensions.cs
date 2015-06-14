@@ -17,7 +17,7 @@ namespace BothezatConfig
         {
             writer.Write(q.X);
             writer.Write(q.Y);
-            writer.Write(q.Z);
+            writer.Write(-q.Z);
             writer.Write(q.W);
         }
 
@@ -26,7 +26,7 @@ namespace BothezatConfig
             Quaternion q = new Quaternion();
             q.X = reader.ReadSingle();
             q.Y = reader.ReadSingle();
-            q.Z = reader.ReadSingle();
+            q.Z = -reader.ReadSingle();
             q.W = reader.ReadSingle();
 
             return q;

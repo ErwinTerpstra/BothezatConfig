@@ -77,6 +77,7 @@
     <Compile Include="Serial\Buffer.cs" />
     <Compile Include="Serial\Command.cs" />
     <Compile Include="Serial\Crc32.cs" />
+    <Compile Include="Util.cs" />
     <EmbeddedResource Include="Interface\ChannelControl.resx">
       <DependentUpon>ChannelControl.cs</DependentUpon>
     </EmbeddedResource>

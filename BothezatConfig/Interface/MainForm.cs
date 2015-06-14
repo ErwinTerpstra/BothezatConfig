@@ -100,6 +100,11 @@ namespace BothezatConfig.Interface
             pitchPID.Config     = resourceManager.config.MC_PID_CONFIGURATION[0];
             rollPid.Config      = resourceManager.config.MC_PID_CONFIGURATION[2];
 
+            throttleControl.Setup(resourceManager.receiver, resourceManager.config);
+            aileronControl.Setup(resourceManager.receiver, resourceManager.config);
+            elevatorControl.Setup(resourceManager.receiver, resourceManager.config);
+            rudderControl.Setup(resourceManager.receiver, resourceManager.config);
+
             updateTimer = new System.Timers.Timer(UPDATE_INTERVAL);
             updateTimer.Elapsed += delegate(object sender, ElapsedEventArgs e) { try { Invoke((MethodInvoker)UpdateResources); } catch (ObjectDisposedException) { } };
 		}
@@ -142,10 +147,10 @@ namespace BothezatConfig.Interface
         {
             glControl.Invalidate();
 
-            throttleBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.THROTTLE)));
-            elevatorBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.ELEVATOR)));
-            aileronBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.AILERON)));
-            rudderBar.SetValue(ConvertToBarValue(resourceManager.receiver.NormalizedChannel(Receiver.Channel.RUDDER)));
+            throttleControl.UpdateResources();
+            elevatorControl.UpdateResources();
+            aileronControl.UpdateResources();
+            rudderControl.UpdateResources();
         }
 
         private void glControl_Load(object sender, EventArgs e)
@@ -215,20 +220,20 @@ namespace BothezatConfig.Interface
 			  
 			glControl.SwapBuffers();
 		}
-
-        private int ConvertToBarValue(float input)
-        {
-            return Math.Min(Math.Max((int) ((input + 1.0f) * 50), 0), 100);
-        }
-
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             resourceManager.SaveConfig();
         }
 
-        private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             resourceManager.UpdateConfig();
         }
+
+        private void revertToDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            resourceManager.RevertConfig();
+        }
+
 	}
 }

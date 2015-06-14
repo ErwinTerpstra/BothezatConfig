@@ -12,23 +12,12 @@ namespace BothezatConfig.Serial.MessageData
         public enum Channel : byte
         {
             // All available RC channels, if more should be read they need to be added below
-            AILERON,
-            ELEVATOR,
-            THROTTLE,
-            RUDDER,
-            AUX1, AUX2,
-            AUX3, AUX4,
-            
-            // Generalization of default order
-            // These are used for easy channel mapping
-            CHANNEL1 = AILERON,
-            CHANNEL2 = ELEVATOR,
-            CHANNEL3 = THROTTLE,
-            CHANNEL4 = RUDDER,
-            CHANNEL5 = AUX1,
-            CHANNEL6 = AUX2,
-            CHANNEL7 = AUX3,
-            CHANNEL8 = AUX4
+            AILERON = 0x00,
+            ELEVATOR = 0x01,
+            THROTTLE = 0x02,
+            RUDDER = 0x03,
+            AUX1 = 0x04, AUX2 = 0x05,
+            AUX3 = 0x06, AUX4 = 0x07,
         };
 
         public UInt16[] channels;
