@@ -55,6 +55,12 @@
     <Compile Include="Interface\ChannelControl.Designer.cs">
       <DependentUpon>ChannelControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\ConfigValueControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\ConfigValueControl.Designer.cs">
+      <DependentUpon>ConfigValueControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\ControlExtensions.cs" />
     <Compile Include="Interface\DoubleBufferedLayoutPanel.cs">
       <SubType>Component</SubType>
@@ -78,8 +84,12 @@
     <Compile Include="Serial\Command.cs" />
     <Compile Include="Serial\Crc32.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="Serial\MessageData\Value.cs" />
     <EmbeddedResource Include="Interface\ChannelControl.resx">
       <DependentUpon>ChannelControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\ConfigValueControl.resx">
+      <DependentUpon>ConfigValueControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

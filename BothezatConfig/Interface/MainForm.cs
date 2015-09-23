@@ -105,8 +105,32 @@ namespace BothezatConfig.Interface
             elevatorControl.Setup(resourceManager.receiver, resourceManager.config);
             rudderControl.Setup(resourceManager.receiver, resourceManager.config);
 
-            updateTimer = new System.Timers.Timer(UPDATE_INTERVAL);
-            updateTimer.Elapsed += delegate(object sender, ElapsedEventArgs e) { try { Invoke((MethodInvoker)UpdateResources); } catch (ObjectDisposedException) { } };
+			CreateValueControl("SYS_LOOP_TIME", resourceManager.config.SYS_LOOP_TIME);
+			CreateValueControl("SR_BAUD_RATE", resourceManager.config.SR_BAUD_RATE);
+			CreateValueControl("MS_CALIBRATION_SAMPLES", resourceManager.config.MS_CALIBRATION_SAMPLES);
+			CreateValueControl("MS_CALIBRATION_INTERVAL", resourceManager.config.MS_CALIBRATION_INTERVAL);
+			CreateValueControl("MS_GYRO_FILTER_RC", resourceManager.config.MS_GYRO_FILTER_RC);
+			CreateValueControl("MS_ACCEL_FILTER_RC", resourceManager.config.MS_ACCEL_FILTER_RC);
+			CreateValueControl("MS_ACCEL_CORRECTION_RC", resourceManager.config.MS_ACCEL_CORRECTION_RC);
+			CreateValueControl("MS_ACCEL_MAX", resourceManager.config.MS_ACCEL_MAX);
+			CreateValueControl("FS_ATTI_MAX_PITCH", resourceManager.config.FS_ATTI_MAX_PITCH);
+			CreateValueControl("FS_ATTI_MAX_ROLL", resourceManager.config.FS_ATTI_MAX_ROLL);
+			CreateValueControl("MC_PWM_FREQUENCY", resourceManager.config.MC_PWM_FREQUENCY);
+			CreateValueControl("MC_PWM_PERIOD", resourceManager.config.MC_PWM_PERIOD);
+			CreateValueControl("MC_PWM_MIN_COMMAND", resourceManager.config.MC_PWM_MIN_COMMAND);
+			CreateValueControl("MC_PWM_MIN_OUTPUT", resourceManager.config.MC_PWM_MIN_OUTPUT);
+			CreateValueControl("MC_PWM_MAX_COMMAND", resourceManager.config.MC_PWM_MAX_COMMAND);
+
+			updateTimer = new System.Timers.Timer(UPDATE_INTERVAL);
+            updateTimer.Elapsed += delegate(object sender, ElapsedEventArgs e) { try { Invoke((MethodInvoker)UpdateResources); } catch (InvalidOperationException) { } };
+		}
+
+		private void CreateValueControl(string name, Value value)
+		{
+			ConfigValueControl control = new ConfigValueControl(name, value);
+			control.Dock = DockStyle.Top;
+			
+			configValuePanel.Controls.Add(control);
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
