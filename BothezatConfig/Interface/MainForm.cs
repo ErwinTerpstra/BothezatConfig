@@ -104,6 +104,8 @@ namespace BothezatConfig.Interface
             aileronControl.Setup(resourceManager.receiver, resourceManager.config);
             elevatorControl.Setup(resourceManager.receiver, resourceManager.config);
             rudderControl.Setup(resourceManager.receiver, resourceManager.config);
+			aux1Control.Setup(resourceManager.receiver, resourceManager.config);
+			aux2Control.Setup(resourceManager.receiver, resourceManager.config);
 
 			CreateValueControl("SYS_LOOP_TIME", resourceManager.config.SYS_LOOP_TIME);
 			CreateValueControl("SR_BAUD_RATE", resourceManager.config.SR_BAUD_RATE);
@@ -175,7 +177,9 @@ namespace BothezatConfig.Interface
             elevatorControl.UpdateResources();
             aileronControl.UpdateResources();
             rudderControl.UpdateResources();
-        }
+			aux1Control.UpdateResources();
+			aux2Control.UpdateResources();
+		}
 
         private void glControl_Load(object sender, EventArgs e)
 		{
@@ -258,6 +262,6 @@ namespace BothezatConfig.Interface
         {
             resourceManager.RevertConfig();
         }
-
+	
 	}
 }

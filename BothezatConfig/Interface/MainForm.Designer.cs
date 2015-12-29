@@ -42,6 +42,8 @@
 			this.mainLayout = new BothezatConfig.Interface.DoubleBufferedLayoutPanel(this.components);
 			this.glControl = new OpenTK.GLControl();
 			this.channelTable = new System.Windows.Forms.TableLayoutPanel();
+			this.aux2Control = new BothezatConfig.Interface.ChannelControl();
+			this.aux1Control = new BothezatConfig.Interface.ChannelControl();
 			this.rudderControl = new BothezatConfig.Interface.ChannelControl();
 			this.elevatorControl = new BothezatConfig.Interface.ChannelControl();
 			this.aileronControl = new BothezatConfig.Interface.ChannelControl();
@@ -65,6 +67,45 @@
 			this.configPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
+			// label3
+			// 
+			label3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			label3.AutoSize = true;
+			label3.Location = new System.Drawing.Point(3, 60);
+			label3.Name = "label3";
+			label3.Size = new System.Drawing.Size(54, 30);
+			label3.TabIndex = 5;
+			label3.Text = "Roll:";
+			label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label2
+			// 
+			label2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			label2.AutoSize = true;
+			label2.Location = new System.Drawing.Point(3, 30);
+			label2.Name = "label2";
+			label2.Size = new System.Drawing.Size(54, 30);
+			label2.TabIndex = 4;
+			label2.Text = "Pitch:";
+			label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label1
+			// 
+			label1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			label1.AutoSize = true;
+			label1.Location = new System.Drawing.Point(3, 0);
+			label1.Name = "label1";
+			label1.Size = new System.Drawing.Size(54, 30);
+			label1.TabIndex = 3;
+			label1.Text = "Yaw:";
+			label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
 			// mainMenu
 			// 
 			this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -72,7 +113,7 @@
             this.configToolStripMenuItem});
 			this.mainMenu.Location = new System.Drawing.Point(0, 0);
 			this.mainMenu.Name = "mainMenu";
-			this.mainMenu.Size = new System.Drawing.Size(1177, 24);
+			this.mainMenu.Size = new System.Drawing.Size(1335, 24);
 			this.mainMenu.TabIndex = 0;
 			// 
 			// fileToolStripMenuItem
@@ -137,16 +178,16 @@
 			this.mainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.mainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.mainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-			this.mainLayout.Size = new System.Drawing.Size(1177, 670);
+			this.mainLayout.Size = new System.Drawing.Size(1335, 773);
 			this.mainLayout.TabIndex = 1;
 			// 
 			// glControl
 			// 
 			this.glControl.BackColor = System.Drawing.Color.Black;
 			this.glControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.glControl.Location = new System.Drawing.Point(591, 323);
+			this.glControl.Location = new System.Drawing.Point(670, 374);
 			this.glControl.Name = "glControl";
-			this.glControl.Size = new System.Drawing.Size(583, 314);
+			this.glControl.Size = new System.Drawing.Size(662, 365);
 			this.glControl.TabIndex = 1;
 			this.glControl.VSync = false;
 			this.glControl.Load += new System.EventHandler(this.glControl_Load);
@@ -160,20 +201,46 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.channelTable.ColumnCount = 1;
 			this.channelTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.channelTable.Controls.Add(this.aux2Control, 0, 5);
+			this.channelTable.Controls.Add(this.aux1Control, 0, 4);
 			this.channelTable.Controls.Add(this.rudderControl, 0, 3);
 			this.channelTable.Controls.Add(this.elevatorControl, 0, 2);
 			this.channelTable.Controls.Add(this.aileronControl, 0, 1);
 			this.channelTable.Controls.Add(this.throttleControl, 0, 0);
-			this.channelTable.Location = new System.Drawing.Point(591, 3);
+			this.channelTable.Location = new System.Drawing.Point(670, 3);
 			this.channelTable.Name = "channelTable";
-			this.channelTable.RowCount = 5;
+			this.channelTable.RowCount = 7;
+			this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+			this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
 			this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
 			this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
 			this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
 			this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
 			this.channelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.channelTable.Size = new System.Drawing.Size(583, 314);
+			this.channelTable.Size = new System.Drawing.Size(662, 365);
 			this.channelTable.TabIndex = 2;
+			// 
+			// aux2Control
+			// 
+			this.aux2Control.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.aux2Control.Channel = BothezatConfig.Serial.MessageData.Receiver.Channel.AUX2;
+			this.aux2Control.Location = new System.Drawing.Point(3, 303);
+			this.aux2Control.Name = "aux2Control";
+			this.aux2Control.Size = new System.Drawing.Size(656, 54);
+			this.aux2Control.TabIndex = 11;
+			// 
+			// aux1Control
+			// 
+			this.aux1Control.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.aux1Control.Channel = BothezatConfig.Serial.MessageData.Receiver.Channel.AUX1;
+			this.aux1Control.Location = new System.Drawing.Point(3, 243);
+			this.aux1Control.Name = "aux1Control";
+			this.aux1Control.Size = new System.Drawing.Size(656, 54);
+			this.aux1Control.TabIndex = 10;
 			// 
 			// rudderControl
 			// 
@@ -183,7 +250,7 @@
 			this.rudderControl.Channel = BothezatConfig.Serial.MessageData.Receiver.Channel.RUDDER;
 			this.rudderControl.Location = new System.Drawing.Point(3, 183);
 			this.rudderControl.Name = "rudderControl";
-			this.rudderControl.Size = new System.Drawing.Size(577, 54);
+			this.rudderControl.Size = new System.Drawing.Size(656, 54);
 			this.rudderControl.TabIndex = 9;
 			// 
 			// elevatorControl
@@ -194,7 +261,7 @@
 			this.elevatorControl.Channel = BothezatConfig.Serial.MessageData.Receiver.Channel.ELEVATOR;
 			this.elevatorControl.Location = new System.Drawing.Point(3, 123);
 			this.elevatorControl.Name = "elevatorControl";
-			this.elevatorControl.Size = new System.Drawing.Size(577, 54);
+			this.elevatorControl.Size = new System.Drawing.Size(656, 54);
 			this.elevatorControl.TabIndex = 8;
 			// 
 			// aileronControl
@@ -205,7 +272,7 @@
 			this.aileronControl.Channel = BothezatConfig.Serial.MessageData.Receiver.Channel.AILERON;
 			this.aileronControl.Location = new System.Drawing.Point(3, 63);
 			this.aileronControl.Name = "aileronControl";
-			this.aileronControl.Size = new System.Drawing.Size(577, 54);
+			this.aileronControl.Size = new System.Drawing.Size(656, 54);
 			this.aileronControl.TabIndex = 7;
 			// 
 			// throttleControl
@@ -216,7 +283,7 @@
 			this.throttleControl.Channel = BothezatConfig.Serial.MessageData.Receiver.Channel.THROTTLE;
 			this.throttleControl.Location = new System.Drawing.Point(3, 3);
 			this.throttleControl.Name = "throttleControl";
-			this.throttleControl.Size = new System.Drawing.Size(577, 54);
+			this.throttleControl.Size = new System.Drawing.Size(656, 54);
 			this.throttleControl.TabIndex = 6;
 			// 
 			// optionsPanel
@@ -231,18 +298,18 @@
 			this.optionsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
 			this.optionsPanel.Controls.Add(this.accelOrientationButton, 1, 0);
 			this.optionsPanel.Controls.Add(this.orientationButton, 0, 0);
-			this.optionsPanel.Location = new System.Drawing.Point(591, 643);
+			this.optionsPanel.Location = new System.Drawing.Point(670, 745);
 			this.optionsPanel.Name = "optionsPanel";
 			this.optionsPanel.RowCount = 1;
 			this.optionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.optionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-			this.optionsPanel.Size = new System.Drawing.Size(583, 24);
+			this.optionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+			this.optionsPanel.Size = new System.Drawing.Size(662, 25);
 			this.optionsPanel.TabIndex = 5;
 			// 
 			// accelOrientationButton
 			// 
 			this.accelOrientationButton.AutoSize = true;
-			this.accelOrientationButton.Location = new System.Drawing.Point(148, 3);
+			this.accelOrientationButton.Location = new System.Drawing.Point(168, 3);
 			this.accelOrientationButton.Name = "accelOrientationButton";
 			this.accelOrientationButton.Size = new System.Drawing.Size(115, 17);
 			this.accelOrientationButton.TabIndex = 4;
@@ -266,11 +333,11 @@
 			this.consoleOutputBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.consoleOutputBox.Location = new System.Drawing.Point(3, 323);
+			this.consoleOutputBox.Location = new System.Drawing.Point(3, 374);
 			this.consoleOutputBox.Multiline = true;
 			this.consoleOutputBox.Name = "consoleOutputBox";
 			this.consoleOutputBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.consoleOutputBox.Size = new System.Drawing.Size(582, 314);
+			this.consoleOutputBox.Size = new System.Drawing.Size(661, 365);
 			this.consoleOutputBox.TabIndex = 0;
 			// 
 			// configPanel
@@ -296,34 +363,8 @@
 			this.configPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
 			this.configPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.configPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.configPanel.Size = new System.Drawing.Size(582, 314);
+			this.configPanel.Size = new System.Drawing.Size(661, 365);
 			this.configPanel.TabIndex = 6;
-			// 
-			// label3
-			// 
-			label3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(3, 60);
-			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(54, 30);
-			label3.TabIndex = 5;
-			label3.Text = "Roll:";
-			label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// label2
-			// 
-			label2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(3, 30);
-			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(54, 30);
-			label2.TabIndex = 4;
-			label2.Text = "Pitch:";
-			label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// yawPID
 			// 
@@ -333,7 +374,7 @@
 			this.yawPID.Config = null;
 			this.yawPID.Location = new System.Drawing.Point(63, 3);
 			this.yawPID.Name = "yawPID";
-			this.yawPID.Size = new System.Drawing.Size(516, 24);
+			this.yawPID.Size = new System.Drawing.Size(595, 24);
 			this.yawPID.TabIndex = 0;
 			// 
 			// pitchPID
@@ -344,7 +385,7 @@
 			this.pitchPID.Config = null;
 			this.pitchPID.Location = new System.Drawing.Point(63, 33);
 			this.pitchPID.Name = "pitchPID";
-			this.pitchPID.Size = new System.Drawing.Size(516, 24);
+			this.pitchPID.Size = new System.Drawing.Size(595, 24);
 			this.pitchPID.TabIndex = 1;
 			// 
 			// rollPid
@@ -355,21 +396,8 @@
 			this.rollPid.Config = null;
 			this.rollPid.Location = new System.Drawing.Point(63, 63);
 			this.rollPid.Name = "rollPid";
-			this.rollPid.Size = new System.Drawing.Size(516, 24);
+			this.rollPid.Size = new System.Drawing.Size(595, 24);
 			this.rollPid.TabIndex = 2;
-			// 
-			// label1
-			// 
-			label1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(3, 0);
-			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(54, 30);
-			label1.TabIndex = 3;
-			label1.Text = "Yaw:";
-			label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// configValuePanel
 			// 
@@ -380,14 +408,14 @@
 			this.configPanel.SetColumnSpan(this.configValuePanel, 2);
 			this.configValuePanel.Location = new System.Drawing.Point(3, 93);
 			this.configValuePanel.Name = "configValuePanel";
-			this.configValuePanel.Size = new System.Drawing.Size(576, 218);
+			this.configValuePanel.Size = new System.Drawing.Size(655, 269);
 			this.configValuePanel.TabIndex = 6;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1177, 694);
+			this.ClientSize = new System.Drawing.Size(1335, 797);
 			this.Controls.Add(this.mainLayout);
 			this.Controls.Add(this.mainMenu);
 			this.MainMenuStrip = this.mainMenu;
@@ -433,6 +461,8 @@
         private ChannelControl aileronControl;
         private System.Windows.Forms.ToolStripMenuItem revertToDefaultsToolStripMenuItem;
 		private System.Windows.Forms.Panel configValuePanel;
+		private ChannelControl aux1Control;
+		private ChannelControl aux2Control;
 	}
 }
 

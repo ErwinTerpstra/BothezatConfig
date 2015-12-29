@@ -17,7 +17,7 @@ namespace BothezatConfig.Serial.MessageData
 			/*
 		     *	Radio receiver
 		     */
-			public const byte RX_PWM_AMOUNT = 4;
+			public const byte RX_PWM_AMOUNT = 6;
 
 			public const byte RX_MAX_CHANNELS = 8;
 
